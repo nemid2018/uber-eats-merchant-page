@@ -1,0 +1,182 @@
+export interface SuccessStory {
+  id: string;
+  name: string;
+  location: string;
+  category: string;
+  headline: string;
+  description: string;
+  url: string;
+  quote?: string;
+  quotePerson?: string;
+  quoteRole?: string;
+  stat?: string;
+  statLabel?: string;
+}
+
+export const successStories: SuccessStory[] = [
+  {
+    id: "oishii-tokyo",
+    name: "Oishii Tokyo",
+    location: "United States",
+    category: "Ads & Offers",
+    headline: "Driving visibility in a crowded market with Ads and Offers",
+    description: "Learn how Oishii Tokyo grew demand 118% using Uber Eats ads and offers.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/oishii-tokyo/",
+    quote: "Uber Eats ads and offers have been a game-changer for our visibility. We saw a 118% increase in demand.",
+    quotePerson: "Owner",
+    quoteRole: "Oishii Tokyo",
+    stat: "118%",
+    statLabel: "demand growth",
+  },
+  {
+    id: "salad-house",
+    name: "Salad House",
+    location: "New Jersey",
+    category: "Restaurants",
+    headline: "Expanding with Uber Eats and Uber Direct",
+    description: "See how this multi-location restaurant group is driving growth with a focus on customer loyalty and tech that makes their operation more efficient.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/salad-house/",
+    quote: "Uber Eats and Uber Direct are a winning combo. Uber Eats helps bring Salad House to audiences that may have never known about us. Uber Direct makes it easier to deliver to our loyal customers who order directly from our website or app.",
+    quotePerson: "Jarrod Bravo",
+    quoteRole: "Director of Operations, Salad House",
+  },
+  {
+    id: "jack-in-the-box",
+    name: "Jack in the Box",
+    location: "Southeast USA",
+    category: "Restaurants",
+    headline: "Expanding sales cost-effectively in the competitive Southeast",
+    description: "Learn how Jack in the Box is working with Uber Eats to reach new customers and expand sales cost-effectively.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/jack-in-the-box/",
+    quote: "Uber Eats has helped us reach new customers in the Southeast market that we wouldn't have been able to tap into otherwise.",
+    quotePerson: "Marketing Team",
+    quoteRole: "Jack in the Box",
+  },
+  {
+    id: "dragon-king",
+    name: "Dragon King",
+    location: "United States",
+    category: "Ads & Offers",
+    headline: "Delivering hospitality beyond the dining room",
+    description: "Learn how Dragon King used targeted advertising on Uber Eats to reach new audiences who might not have discovered the restaurant otherwise.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/dragon-king/",
+    quote: "The advertising tools on Uber Eats helped us reach customers who had never heard of Dragon King before. It's like having a billboard in everyone's pocket.",
+    quotePerson: "Owner",
+    quoteRole: "Dragon King",
+  },
+  {
+    id: "frank-pepe",
+    name: "Frank Pepe Pizzeria Napoletana",
+    location: "Connecticut",
+    category: "Restaurants",
+    headline: "Growing with Uber Eats and Uber Direct",
+    description: "Investing in online ordering with Uber Eats is helping Frank Pepe stand out, reach new customers and grow its online business.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/frank-pepe/",
+    quote: "Online ordering through Uber Eats has helped us stand out and reach customers we never could before. It's been incredible for growth.",
+    quotePerson: "Management",
+    quoteRole: "Frank Pepe Pizzeria",
+  },
+  {
+    id: "white-castle",
+    name: "White Castle",
+    location: "United States",
+    category: "Restaurants",
+    headline: "Delivering crave-worthy experiences with Uber Direct and Uber Eats",
+    description: "Learn how White Castle works with Uber Direct and Uber Eats to help the company grow its business one delicious delivery at a time.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/white-castle/",
+  },
+  {
+    id: "imperial-diner",
+    name: "Imperial Diner",
+    location: "Freeport, NY",
+    category: "Restaurants",
+    headline: "Meeting customers wherever they are",
+    description: "In Freeport, NY, a storied family-run diner is blending old-school hospitality with modern tools to grow its business through dine-in, pickup, and delivery.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/imperial-diner/",
+  },
+  {
+    id: "sally-beauty",
+    name: "Sally Beauty",
+    location: "United States",
+    category: "Retail",
+    headline: "Growing customer loyalty and sales with omnichannel strategy",
+    description: "Discover how Sally Beauty is redefining convenience and accessibility in the beauty retail space with Uber Eats and Uber Direct.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/sally-beauty/",
+  },
+  {
+    id: "jimmy-johns",
+    name: "Jimmy John's",
+    location: "United States",
+    category: "Ads & Offers",
+    headline: "Fueling Mother's Day sales with a standout campaign",
+    description: "Discover how Jimmy John's partnered with Uber to launch a high-impact Mother's Day campaign that drove both buzz and sales.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/jimmy-johns/",
+  },
+  {
+    id: "burger-25",
+    name: "Burger 25",
+    location: "New Jersey",
+    category: "Restaurants",
+    headline: "Sharing the recipe for success with Uber Eats",
+    description: "Steve Vetter, the fearless founder of Burger 25 dishes on how they're partnering with Uber Eats to grow their burger empire in New Jersey.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/burger-25/",
+  },
+  {
+    id: "specs",
+    name: "Spec's",
+    location: "Texas",
+    category: "Grocery & Convenience",
+    headline: "Growing online alcohol sales with Uber Eats and Uber Direct",
+    description: "See how the Texas-based alcohol retailer taps Uber's delivery and marketing tools to drive new customer acquisition, streamline operations, and boost repeat purchasing.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/specs/",
+  },
+  {
+    id: "foxtrot",
+    name: "Foxtrot",
+    location: "United States",
+    category: "Grocery & Convenience",
+    headline: "Delivering fresh food, wine, and groceries on demand",
+    description: "See how customers can order from Foxtrot directly or from Uber Eats and have their items quickly and conveniently delivered with Uber.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/foxtrot-2/",
+  },
+  {
+    id: "alpaca-chicken",
+    name: "Alpaca Chicken",
+    location: "United States",
+    category: "Restaurants",
+    headline: "Growing customer base with genuine service and quality food",
+    description: "See how Alpaca Chicken is leveraging an exclusive relationship with Uber Eats to deliver on the promise of genuine service and quality food.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/alpaca-chicken/",
+  },
+  {
+    id: "mediamarktsaturn",
+    name: "MediaMarktSaturn",
+    location: "Germany",
+    category: "Retail",
+    headline: "90-minute express delivery with Uber Direct",
+    description: "Uber Direct provides the technology and logistics that help MediaMarktSaturn deliver consumer electronics items with unmatched reliability, speed and convenience.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/mediamarktsaturn/",
+    stat: "90min",
+    statLabel: "express delivery",
+  },
+  {
+    id: "monceau-fleurs",
+    name: "Monceau Fleurs",
+    location: "France",
+    category: "Uber Direct",
+    headline: "Turning bouquet delivery into a performance driver",
+    description: "Discover how Monceau Fleurs is redefining the flower delivery experience with Uber Direct.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/monceau-fleurs/",
+  },
+  {
+    id: "eb-games",
+    name: "EB Games",
+    location: "Australia",
+    category: "Retail",
+    headline: "Building customer loyalty with Uber Direct",
+    description: "See how this leading Australian retailer is growing video game and accessories sales with Uber Direct.",
+    url: "https://merchants.ubereats.com/us/en/resources/success-stories/eb-games/",
+  },
+];
+
+export const categories = ["All", "Restaurants", "Ads & Offers", "Grocery & Convenience", "Uber Direct", "Retail"];
