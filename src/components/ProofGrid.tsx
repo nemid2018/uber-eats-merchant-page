@@ -52,7 +52,7 @@ const FlipCard = ({ stat, index }: { stat: typeof stats[0]; index: number }) => 
     <motion.div
       {...fadeInUp}
       transition={{ duration: 0.5, ease, delay: index * 0.1 }}
-      className="perspective-[1000px] cursor-pointer h-[260px]"
+      className="perspective-[1000px] cursor-pointer min-h-[260px]"
       onClick={() => setFlipped(!flipped)}
     >
       <motion.div
@@ -75,14 +75,12 @@ const FlipCard = ({ stat, index }: { stat: typeof stats[0]; index: number }) => 
 
         {/* Back */}
         <div
-          className="absolute inset-0 bg-primary text-primary-foreground rounded-xl p-8 overflow-hidden"
+          className="absolute inset-0 bg-primary text-primary-foreground rounded-xl p-8 overflow-hidden flex flex-col justify-center gap-4"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <span className="data-value text-primary-foreground">{stat.value}</span>
-              <h3 className="text-lg font-bold mt-1">{stat.backTitle}</h3>
-            </div>
+          <div>
+            <span className="data-value text-primary-foreground">{stat.value}</span>
+            <h3 className="text-lg font-bold mt-1">{stat.backTitle}</h3>
           </div>
           <ul className="space-y-3">
             {stat.backDetails.map((detail) => (
@@ -92,7 +90,6 @@ const FlipCard = ({ stat, index }: { stat: typeof stats[0]; index: number }) => 
               </li>
             ))}
           </ul>
-          <p className="text-xs opacity-50 mt-6">Click to flip back</p>
         </div>
       </motion.div>
     </motion.div>
