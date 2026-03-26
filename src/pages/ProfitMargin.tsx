@@ -250,8 +250,8 @@ const ProfitMargin = () => {
           <motion.div {...fadeInUp} className="max-w-3xl mx-auto">
             <h2 className="text-2xl font-bold mb-8">Putting it in context</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-50 rounded-xl p-8">
-                <div className="w-9 h-9 flex items-center justify-center mb-5 text-muted-foreground">
+              <div className="bg-gray-50 rounded-xl p-6">
+                <div className="w-9 h-9 flex items-center justify-center mb-3 text-muted-foreground">
                   <TrendingUp size={20} strokeWidth={1.5} />
                 </div>
                 <h3 className="font-semibold mb-3">
@@ -264,8 +264,8 @@ const ProfitMargin = () => {
                   rides business.
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-xl p-8">
-                <div className="w-9 h-9 flex items-center justify-center mb-5 text-muted-foreground">
+              <div className="bg-gray-50 rounded-xl p-6">
+                <div className="w-9 h-9 flex items-center justify-center mb-3 text-muted-foreground">
                   <Utensils size={20} strokeWidth={1.5} />
                 </div>
                 <h3 className="font-semibold mb-3">
@@ -278,8 +278,8 @@ const ProfitMargin = () => {
                   — razor-thin.
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-xl p-8">
-                <div className="w-9 h-9 flex items-center justify-center mb-5 text-muted-foreground">
+              <div className="bg-gray-50 rounded-xl p-6">
+                <div className="w-9 h-9 flex items-center justify-center mb-3 text-muted-foreground">
                   <Car size={20} strokeWidth={1.5} />
                 </div>
                 <h3 className="font-semibold mb-3">Half goes to the driver</h3>
@@ -289,8 +289,8 @@ const ProfitMargin = () => {
                   plus insurance, gas, and management overhead.
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-xl p-8">
-                <div className="w-9 h-9 flex items-center justify-center mb-5 text-muted-foreground">
+              <div className="bg-gray-50 rounded-xl p-6">
+                <div className="w-9 h-9 flex items-center justify-center mb-3 text-muted-foreground">
                   <Smartphone size={20} strokeWidth={1.5} />
                 </div>
                 <h3 className="font-semibold mb-3">You get the tech for free</h3>
