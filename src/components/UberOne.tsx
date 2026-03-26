@@ -73,18 +73,19 @@ const FlipCard = ({ benefit, index }: { benefit: typeof benefits[0]; index: numb
     <motion.div
       {...fadeInUp}
       transition={{ duration: 0.5, ease, delay: index * 0.08 }}
-      className="perspective-[1000px] cursor-pointer h-[220px]"
+      className="cursor-pointer"
+      style={{ perspective: "1000px" }}
       onClick={() => setFlipped(!flipped)}
     >
       <motion.div
         animate={{ rotateY: flipped ? 180 : 0 }}
         transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-        className="relative w-full h-full"
-        style={{ transformStyle: "preserve-3d" }}
+        className="relative w-full"
+        style={{ transformStyle: "preserve-3d", minHeight: 220 }}
       >
         {/* Front */}
         <div
-          className="absolute inset-0 group bg-card rounded-xl p-8 shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden"
+          className="absolute inset-0 group bg-card rounded-xl p-8 shadow-card hover:shadow-card-hover transition-all duration-300"
           style={{ backfaceVisibility: "hidden" }}
         >
           <div className="absolute top-0 left-0 h-[3px] w-0 group-hover:w-full bg-primary transition-all duration-500 ease-out" />
@@ -95,9 +96,9 @@ const FlipCard = ({ benefit, index }: { benefit: typeof benefits[0]; index: numb
           <p className="body-text text-sm">{benefit.description}</p>
         </div>
 
-        {/* Back */}
+        {/* Back — sets the card height; front stretches to match via absolute inset-0 */}
         <div
-          className="absolute inset-0 bg-primary text-primary-foreground rounded-xl p-8 overflow-hidden"
+          className="relative bg-primary text-primary-foreground rounded-xl p-8"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
           <div className="flex items-center justify-between mb-4">
