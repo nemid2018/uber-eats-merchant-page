@@ -22,42 +22,48 @@ const ProfitMargin = () => {
     {
       label: "Delivery partner pay",
       pct: 0.46,
-      color: "bg-primary",
+      hex: "#06C167",
+      textColor: "white",
       Icon: Car,
       description: "The driver who picks up & delivers the food",
     },
     {
+      label: "Technology & support",
+      pct: 0.12,
+      hex: "#1a1a1a",
+      textColor: "white",
+      Icon: Smartphone,
+      description: "The app, GPS routing, 24/7 customer support, order tracking",
+    },
+    {
       label: "Payment processing",
       pct: 0.10,
-      color: "bg-blue-500",
+      hex: "#6B7280",
+      textColor: "white",
       Icon: CreditCard,
       description: "Credit card fees, fraud protection, refunds",
     },
     {
       label: "Insurance & safety",
       pct: 0.06,
-      color: "bg-amber-500",
+      hex: "#9CA3AF",
+      textColor: "white",
       Icon: Shield,
       description: "Driver insurance, accident coverage, background checks",
     },
     {
-      label: "Technology & support",
-      pct: 0.12,
-      color: "bg-violet-500",
-      Icon: Smartphone,
-      description: "The app, GPS routing, 24/7 customer support, order tracking",
-    },
-    {
       label: "Marketing & promos",
       pct: 0.10,
-      color: "bg-rose-500",
+      hex: "#D1D5DB",
+      textColor: "#374151",
       Icon: Megaphone,
       description: "Bringing new customers to your restaurant",
     },
     {
       label: "Uber's actual profit",
       pct: 0.16,
-      color: "bg-emerald-500",
+      hex: "#F3F4F6",
+      textColor: "#374151",
       Icon: TrendingUp,
       description: "What Uber actually keeps at the end of the day",
     },
@@ -157,18 +163,34 @@ const ProfitMargin = () => {
 
             {/* The big picture */}
             <div className="mb-10">
-              {/* Multicolored segmented bar */}
-              <div className="flex rounded-xl overflow-hidden h-12 mb-6">
+              {/* Segmented bar — muted premium palette */}
+              <div className="flex rounded-full overflow-hidden h-10 mb-4">
                 {breakdown.map((item) => (
                   <div
                     key={item.label}
-                    className={`${item.color} relative`}
-                    style={{ width: `${item.pct * 100}%` }}
+                    className="relative"
+                    style={{ width: `${item.pct * 100}%`, backgroundColor: item.hex }}
                     title={`${item.label}: $${(commission * item.pct).toFixed(2)}`}
                   >
-                    <span className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">
+                    <span
+                      className="absolute inset-0 flex items-center justify-center text-xs font-semibold"
+                      style={{ color: item.textColor }}
+                    >
                       {Math.round(item.pct * 100)}%
                     </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Legend */}
+              <div className="flex flex-wrap gap-x-5 gap-y-2 mb-6">
+                {breakdown.map((item) => (
+                  <div key={item.label} className="flex items-center gap-1.5">
+                    <span
+                      className="w-2.5 h-2.5 rounded-full shrink-0 border border-black/10"
+                      style={{ backgroundColor: item.hex }}
+                    />
+                    <span className="text-xs text-muted-foreground">{item.label}</span>
                   </div>
                 ))}
               </div>
