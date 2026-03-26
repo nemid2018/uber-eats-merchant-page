@@ -487,12 +487,12 @@ const WhyPartner = () => {
               >
                 Start your free trial
               </a>
-              <a
-                href="/earnings"
+              <Link
+                to="/earnings"
                 className="inline-flex items-center justify-center px-8 py-3 rounded-lg bg-primary-foreground/20 text-primary-foreground font-medium hover:bg-primary-foreground/30 transition-colors active:scale-[0.98]"
               >
                 Calculate your earnings
-              </a>
+              </Link>
             </div>
           </motion.div>
         </section>

@@ -1,37 +1,17 @@
-import { useStyletron } from "baseui";
-import { Button } from "baseui/button";
-import { HeadingXLarge, ParagraphMedium } from "baseui/typography";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const NotFound = () => {
-  const [css, theme] = useStyletron();
-  const navigate = useNavigate();
-
   return (
-    <div
-      className={css({
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: theme.colors.backgroundPrimary,
-        padding: theme.sizing.scale800,
-      })}
-    >
-      <div
-        className={css({
-          textAlign: "center",
-          maxWidth: "400px",
-        })}
-      >
-        <HeadingXLarge marginBottom={theme.sizing.scale600}>404</HeadingXLarge>
-        <ParagraphMedium
-          color={theme.colors.contentSecondary}
-          marginBottom={theme.sizing.scale800}
+    <div className="min-h-screen flex items-center justify-center bg-background px-6">
+      <div className="text-center">
+        <h1 className="text-6xl font-bold font-display text-foreground mb-4">404</h1>
+        <p className="text-muted-foreground text-lg mb-8">Page not found</p>
+        <Link
+          to="/"
+          className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary-hover transition-colors"
         >
-          Page not found
-        </ParagraphMedium>
-        <Button onClick={() => navigate("/")}>Go Home</Button>
+          Go Home
+        </Link>
       </div>
     </div>
   );

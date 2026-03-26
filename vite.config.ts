@@ -5,6 +5,7 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  base: '/uber-eats-merchant-page/',
   server: {
     host: "::",
     port: 8080,
