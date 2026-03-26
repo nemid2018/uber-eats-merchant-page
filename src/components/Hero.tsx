@@ -2,16 +2,19 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeInUp } from "../lib/animations";
 
-const screens = [
-  // Screen 1 — Order confirmation
+// ─── Shared food data ────────────────────────────────────────────────────────
+const FOOD_ITEMS = [
+  { id: "ramen",    name: "Spicy Ramen Bowl",  sub: "Noodles · 20–30 min",  price: 14.99 },
+  { id: "gyoza",    name: "Gyoza (6 pcs)",      sub: "Japanese · 15–25 min", price: 9.50  },
+  { id: "lemonade", name: "Matcha Lemonade",    sub: "Drinks · 10 min",      price: 4.99  },
+];
+
+// ─── Background teaser screens (static, no interactivity) ───────────────────
+const teaserScreens = [
   <div key="confirm" className="flex flex-col h-full">
     <div className="bg-[#06C167] px-5 pt-3 pb-5 flex-shrink-0">
-      <p className="text-white text-[9px] font-bold tracking-[0.15em] uppercase mb-1.5 opacity-80">
-        Order confirmed
-      </p>
-      <p className="text-white text-[17px] font-bold leading-snug">
-        Your food is<br />being prepared
-      </p>
+      <p className="text-white text-[9px] font-bold tracking-[0.15em] uppercase mb-1.5 opacity-80">Order confirmed</p>
+      <p className="text-white text-[17px] font-bold leading-snug">Your food is<br />being prepared</p>
     </div>
     <div className="flex-1 flex flex-col px-5 py-4 overflow-hidden">
       <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-3">Your order</p>
@@ -42,7 +45,6 @@ const screens = [
     </div>
   </div>,
 
-  // Screen 2 — Browsing
   <div key="browse" className="flex flex-col h-full">
     <div className="px-5 pt-5 pb-3 flex-shrink-0 border-b border-gray-100">
       <p className="text-[11px] text-gray-400 mb-1">Good evening 👋</p>
@@ -50,88 +52,56 @@ const screens = [
     </div>
     <div className="flex-1 flex flex-col px-5 py-4 overflow-hidden">
       <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-3">Popular near you</p>
-      <div className="flex flex-col gap-0">
-        {[
-          { name: "Spicy Ramen Bowl",    sub: "Noodles · 20–30 min", price: "$14.99" },
-          { name: "Truffle Margherita",  sub: "Pizza · 25–35 min",   price: "$18.50" },
-          { name: "Avocado Smash Toast", sub: "Brunch · 15–25 min",  price: "$12.00" },
-        ].map((item, i) => (
-          <div
-            key={item.name}
-            className={`flex items-center justify-between py-3 ${i < 2 ? "border-b border-gray-100" : ""}`}
-          >
-            <div className="flex flex-col gap-0.5 min-w-0 pr-2">
-              <span className="text-[11px] font-semibold text-gray-900 truncate">{item.name}</span>
-              <span className="text-[10px] text-gray-400">{item.sub}</span>
-            </div>
-            <div className="flex flex-col items-end shrink-0">
-              <span className="text-[11px] font-bold text-black">{item.price}</span>
-              <div className="mt-1 w-5 h-5 rounded-full bg-black flex items-center justify-center">
-                <span className="text-white text-[10px] font-bold leading-none">+</span>
-              </div>
+      {[
+        { name: "Spicy Ramen Bowl",    sub: "Noodles · 20–30 min", price: "$14.99" },
+        { name: "Truffle Margherita",  sub: "Pizza · 25–35 min",   price: "$18.50" },
+        { name: "Avocado Smash Toast", sub: "Brunch · 15–25 min",  price: "$12.00" },
+      ].map((item, i) => (
+        <div key={item.name} className={`flex items-center justify-between py-3 ${i < 2 ? "border-b border-gray-100" : ""}`}>
+          <div className="flex flex-col gap-0.5 min-w-0 pr-2">
+            <span className="text-[11px] font-semibold text-gray-900 truncate">{item.name}</span>
+            <span className="text-[10px] text-gray-400">{item.sub}</span>
+          </div>
+          <div className="flex flex-col items-end shrink-0">
+            <span className="text-[11px] font-bold text-black">{item.price}</span>
+            <div className="mt-1 w-5 h-5 rounded-full bg-black flex items-center justify-center">
+              <span className="text-white text-[10px] font-bold leading-none">+</span>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   </div>,
 
-  // Screen 3 — Delivery tracking
   <div key="track" className="flex flex-col h-full">
     <div className="bg-black px-5 pt-4 pb-4 flex-shrink-0">
-      <p className="text-white text-[9px] font-bold tracking-[0.15em] uppercase mb-1.5 opacity-60">
-        On the way
-      </p>
-      <p className="text-white text-[17px] font-bold leading-snug">
-        Driver is<br />3 min away
-      </p>
+      <p className="text-white text-[9px] font-bold tracking-[0.15em] uppercase mb-1.5 opacity-60">On the way</p>
+      <p className="text-white text-[17px] font-bold leading-snug">Driver is<br />3 min away</p>
     </div>
-
-    {/* Animated progress bar */}
     <div className="h-1 w-full bg-gray-100 flex-shrink-0">
-      <motion.div
-        className="h-full bg-[#06C167]"
-        initial={{ width: "30%" }}
-        animate={{ width: "85%" }}
-        transition={{ duration: 2.5, ease: "easeInOut" }}
-      />
+      <motion.div className="h-full bg-[#06C167]" initial={{ width: "30%" }} animate={{ width: "85%" }} transition={{ duration: 2.5, ease: "easeInOut" }} />
     </div>
-
     <div className="flex-1 flex flex-col px-5 py-4">
-      {/* ETA pill */}
       <div className="flex items-center gap-2 mb-5">
         <div className="w-2 h-2 rounded-full bg-[#06C167]" />
         <span className="text-[11px] font-semibold text-gray-700">Arriving by <span className="text-black">8:42 PM</span></span>
       </div>
-
-      {/* Simple step list */}
       <div className="flex flex-col gap-3">
         {[
-          { label: "Order placed",    done: true  },
-          { label: "Being prepared",  done: true  },
-          { label: "Picked up",       done: true  },
-          { label: "Delivered",       done: false },
+          { label: "Order placed",   done: true  },
+          { label: "Being prepared", done: true  },
+          { label: "Picked up",      done: true  },
+          { label: "Delivered",      done: false },
         ].map((step) => (
           <div key={step.label} className="flex items-center gap-3">
-            <div
-              className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${
-                step.done ? "bg-[#06C167]" : "border-2 border-gray-200"
-              }`}
-            >
-              {step.done && (
-                <svg viewBox="0 0 10 8" className="w-2.5 h-2.5" fill="none">
-                  <path d="M1 4l3 3 5-6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
+            <div className={`w-4 h-4 rounded-full flex items-center justify-center shrink-0 ${step.done ? "bg-[#06C167]" : "border-2 border-gray-200"}`}>
+              {step.done && <svg viewBox="0 0 10 8" className="w-2.5 h-2.5" fill="none"><path d="M1 4l3 3 5-6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>}
             </div>
-            <span className={`text-[11px] font-medium ${step.done ? "text-gray-800" : "text-gray-300"}`}>
-              {step.label}
-            </span>
+            <span className={`text-[11px] font-medium ${step.done ? "text-gray-800" : "text-gray-300"}`}>{step.label}</span>
           </div>
         ))}
       </div>
     </div>
-
     <div className="px-5 pb-6 flex-shrink-0">
       <div className="border border-gray-200 rounded-xl py-3 flex items-center justify-center">
         <span className="text-black text-[11px] font-bold tracking-wide">Contact driver</span>
@@ -140,71 +110,372 @@ const screens = [
   </div>,
 ];
 
-const screenVariants = {
-  enter: { opacity: 0, y: 20 },
-  center: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -20 },
+const teaserVariants = {
+  enter:  { opacity: 0, y: 20 },
+  center: { opacity: 1, y: 0  },
+  exit:   { opacity: 0, y: -20 },
 };
 
-const PhoneMockup = () => {
+// ─── Shared mini-components ──────────────────────────────────────────────────
+const Check = () => (
+  <svg viewBox="0 0 10 8" className="w-2.5 h-2.5" fill="none">
+    <path d="M1 4l3 3 5-6" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const BackArrow = ({ onBack }: { onBack: () => void }) => (
+  <button
+    onClick={onBack}
+    className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors shrink-0"
+    aria-label="Back"
+  >
+    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 12H5M12 5l-7 7 7 7" />
+    </svg>
+  </button>
+);
+
+// ─── Interactive app screens ─────────────────────────────────────────────────
+type CartMap    = Record<string, number>;
+type AppScreen  = "home" | "cart" | "confirmed" | "tracking";
+
+const DELIVERY_FEE = 2.99;
+
+const appVariants = {
+  enter:  { opacity: 0, x: 16  },
+  center: { opacity: 1, x: 0   },
+  exit:   { opacity: 0, x: -16 },
+};
+
+// Home
+const HomeScreen = ({
+  cart, add, go,
+}: { cart: CartMap; add: (id: string) => void; go: (s: AppScreen) => void }) => {
+  const totalItems = Object.values(cart).reduce((a, b) => a + b, 0);
+  return (
+    <div className="flex flex-col h-full">
+      <div className="px-5 pt-5 pb-3 flex items-center justify-between border-b border-gray-100 flex-shrink-0">
+        <div>
+          <p className="text-[11px] text-gray-400">Good evening 👋</p>
+          <p className="text-[15px] font-bold text-black">What are you craving?</p>
+        </div>
+        <button onClick={() => go("cart")} className="relative p-1" aria-label="Cart">
+          <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 01-8 0" />
+          </svg>
+          <AnimatePresence>
+            {totalItems > 0 && (
+              <motion.span
+                key="badge"
+                initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
+                className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#06C167] text-white text-[9px] font-bold flex items-center justify-center"
+              >
+                {totalItems}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </button>
+      </div>
+
+      <div className="flex-1 overflow-auto px-5 py-4">
+        <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-3">Popular near you</p>
+        {FOOD_ITEMS.map((item, i) => (
+          <div key={item.id} className={`flex items-center justify-between py-3 ${i < FOOD_ITEMS.length - 1 ? "border-b border-gray-100" : ""}`}>
+            <div className="min-w-0 pr-2">
+              <p className="text-[12px] font-semibold text-gray-900">{item.name}</p>
+              <p className="text-[10px] text-gray-400">{item.sub}</p>
+              <p className="text-[11px] font-bold text-black mt-0.5">${item.price.toFixed(2)}</p>
+            </div>
+            <div className="relative shrink-0">
+              <button
+                onClick={() => add(item.id)}
+                className="w-7 h-7 rounded-full bg-black flex items-center justify-center active:scale-90 transition-transform"
+              >
+                <span className="text-white text-sm font-bold leading-none">+</span>
+              </button>
+              <AnimatePresence>
+                {(cart[item.id] || 0) > 0 && (
+                  <motion.span
+                    key="qty"
+                    initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
+                    className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#06C167] text-white text-[9px] font-bold flex items-center justify-center"
+                  >
+                    {cart[item.id]}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Cart
+const CartScreen = ({
+  cart, add, remove, go,
+}: { cart: CartMap; add: (id: string) => void; remove: (id: string) => void; go: (s: AppScreen) => void }) => {
+  const cartItems   = FOOD_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
+  const totalItems  = Object.values(cart).reduce((a, b) => a + b, 0);
+  const subtotal    = FOOD_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="flex items-center gap-3 px-5 pt-5 pb-3 border-b border-gray-100 flex-shrink-0">
+        <BackArrow onBack={() => go("home")} />
+        <p className="text-[14px] font-bold text-black">Your Cart</p>
+        {totalItems > 0 && <span className="ml-auto text-[10px] text-gray-400">{totalItems} item{totalItems !== 1 ? "s" : ""}</span>}
+      </div>
+
+      <div className="flex-1 overflow-auto px-5 py-4">
+        {cartItems.length === 0 ? (
+          <p className="text-[12px] text-gray-400 text-center mt-10">Your cart is empty</p>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {cartItems.map((item) => (
+              <div key={item.id} className="flex items-center justify-between">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[12px] font-semibold text-gray-900 truncate">{item.name}</p>
+                  <p className="text-[11px] text-gray-400">${(item.price * cart[item.id]).toFixed(2)}</p>
+                </div>
+                <div className="flex items-center gap-2 ml-3 shrink-0">
+                  <button onClick={() => remove(item.id)} className="w-6 h-6 rounded-full border border-gray-200 flex items-center justify-center text-[13px] text-gray-600 active:scale-90 transition-transform">−</button>
+                  <span className="text-[12px] font-bold w-4 text-center">{cart[item.id]}</span>
+                  <button onClick={() => add(item.id)}    className="w-6 h-6 rounded-full bg-black flex items-center justify-center text-[13px] text-white active:scale-90 transition-transform">+</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {cartItems.length > 0 && (
+        <div className="px-5 pb-5 flex-shrink-0 border-t border-gray-100 pt-3">
+          <div className="flex justify-between text-[11px] text-gray-400 mb-1"><span>Subtotal</span><span>${subtotal.toFixed(2)}</span></div>
+          <div className="flex justify-between text-[11px] text-gray-400 mb-3"><span>Delivery</span><span>${DELIVERY_FEE.toFixed(2)}</span></div>
+          <div className="flex justify-between text-[13px] font-bold text-black mb-3"><span>Total</span><span>${(subtotal + DELIVERY_FEE).toFixed(2)}</span></div>
+          <button
+            onClick={() => go("confirmed")}
+            className="w-full bg-[#06C167] rounded-xl py-3 text-white text-[12px] font-bold tracking-wide active:scale-[0.98] transition-transform"
+          >
+            Place order
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Confirmed
+const ConfirmedScreen = ({
+  cart, go,
+}: { cart: CartMap; go: (s: AppScreen) => void }) => {
+  const cartItems = FOOD_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
+  const subtotal  = FOOD_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="bg-[#06C167] px-5 pt-5 pb-5 flex-shrink-0">
+        <BackArrow onBack={() => go("home")} />
+        <p className="text-white text-[9px] font-bold tracking-[0.15em] uppercase mt-3 mb-1.5 opacity-80">Order confirmed</p>
+        <p className="text-white text-[17px] font-bold leading-snug">Your food is<br />being prepared</p>
+      </div>
+
+      <div className="flex-1 flex flex-col px-5 py-4 overflow-auto">
+        <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-3">Your order</p>
+        <div className="flex flex-col gap-2.5">
+          {cartItems.map((item) => (
+            <div key={item.id} className="flex justify-between items-baseline">
+              <div className="flex gap-1.5 min-w-0">
+                <span className="text-[11px] text-gray-400 shrink-0">{cart[item.id]}×</span>
+                <span className="text-[11px] text-gray-800 font-medium truncate">{item.name}</span>
+              </div>
+              <span className="text-[11px] text-gray-800 font-medium ml-2 shrink-0">${(item.price * cart[item.id]).toFixed(2)}</span>
+            </div>
+          ))}
+        </div>
+        <div className="mt-auto pt-3 border-t border-gray-100 flex justify-between">
+          <span className="text-[11px] font-bold text-black">Total</span>
+          <span className="text-[11px] font-bold text-black">${(subtotal + DELIVERY_FEE).toFixed(2)}</span>
+        </div>
+      </div>
+
+      <div className="px-5 pb-5 flex-shrink-0">
+        <button
+          onClick={() => go("tracking")}
+          className="w-full bg-black rounded-xl py-3 text-white text-[12px] font-bold tracking-wide active:scale-[0.98] transition-transform"
+        >
+          Track order
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Tracking
+const TrackingScreen = ({ go }: { go: (s: AppScreen) => void }) => {
+  const [delivered, setDelivered] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setDelivered(true), 3000);
+    return () => clearTimeout(t);
+  }, []);
+
+  const steps = [
+    { label: "Order placed",   done: true      },
+    { label: "Being prepared", done: true      },
+    { label: "Picked up",      done: true      },
+    { label: "Delivered",      done: delivered },
+  ];
+
+  return (
+    <div className="flex flex-col h-full">
+      <div className="bg-black px-5 pt-5 pb-4 flex-shrink-0">
+        <BackArrow onBack={() => go("confirmed")} />
+        <p className="text-white text-[9px] font-bold tracking-[0.15em] uppercase mt-3 mb-1.5 opacity-60">On the way</p>
+        <p className="text-white text-[17px] font-bold">{delivered ? "Order delivered!" : "Driver is 3 min away"}</p>
+      </div>
+
+      <div className="h-1.5 w-full bg-gray-100 flex-shrink-0">
+        <motion.div
+          className="h-full bg-[#06C167]"
+          initial={{ width: "75%" }}
+          animate={{ width: delivered ? "100%" : "75%" }}
+          transition={{ duration: 1, ease: "easeInOut" }}
+        />
+      </div>
+
+      <div className="flex-1 flex flex-col px-5 py-4">
+        <div className="flex items-center gap-2 mb-5">
+          <div className="w-2 h-2 rounded-full bg-[#06C167]" />
+          <span className="text-[11px] font-semibold text-gray-700">
+            {delivered ? "Delivered at 8:42 PM" : <>Arriving by <span className="text-black">8:42 PM</span></>}
+          </span>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          {steps.map((step) => (
+            <div key={step.label} className="flex items-center gap-3">
+              <motion.div
+                className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 border-2 ${step.done ? "bg-[#06C167] border-[#06C167]" : "border-gray-200"}`}
+                animate={step.done ? { scale: [1, 1.25, 1] } : {}}
+                transition={{ duration: 0.3 }}
+              >
+                {step.done && <Check />}
+              </motion.div>
+              <span className={`text-[12px] font-medium ${step.done ? "text-gray-900" : "text-gray-300"}`}>
+                {step.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="px-5 pb-5 flex-shrink-0">
+        <div className="border border-gray-200 rounded-xl py-3 flex items-center justify-center">
+          <span className="text-black text-[11px] font-bold tracking-wide">Contact driver</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ─── Interactive app shell ───────────────────────────────────────────────────
+const InteractiveApp = () => {
+  const [screen, setScreen] = useState<AppScreen>("home");
+  const [cart,   setCart  ] = useState<CartMap>({});
+
+  const add = (id: string) =>
+    setCart((p) => ({ ...p, [id]: (p[id] || 0) + 1 }));
+
+  const remove = (id: string) =>
+    setCart((p) => {
+      const n = { ...p };
+      if ((n[id] || 0) > 1) n[id]--;
+      else delete n[id];
+      return n;
+    });
+
+  return (
+    <div className="h-full relative overflow-hidden">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={screen}
+          variants={appVariants}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          transition={{ duration: 0.22, ease: [0.2, 0, 0, 1] }}
+          className="absolute inset-0"
+        >
+          {screen === "home"      && <HomeScreen      cart={cart} add={add}             go={setScreen} />}
+          {screen === "cart"      && <CartScreen      cart={cart} add={add} remove={remove} go={setScreen} />}
+          {screen === "confirmed" && <ConfirmedScreen cart={cart}                        go={setScreen} />}
+          {screen === "tracking"  && <TrackingScreen                                     go={setScreen} />}
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+};
+
+// ─── Background teaser phone ─────────────────────────────────────────────────
+const PhoneMockup = ({ onClick }: { onClick: () => void }) => {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const id = setInterval(() => setIndex((i) => (i + 1) % screens.length), 4500);
+    const id = setInterval(() => setIndex((i) => (i + 1) % teaserScreens.length), 4500);
     return () => clearInterval(id);
   }, []);
 
   return (
     <div className="flex flex-col items-center gap-4">
       <motion.div
-        className="relative rotate-2"
+        className="relative rotate-2 cursor-pointer"
         style={{ width: 260, height: 540 }}
         animate={{ y: [0, -10, 0] }}
         transition={{ duration: 4, ease: "easeInOut", repeat: Infinity }}
+        onClick={onClick}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
       >
-      {/* Black bezel */}
-      <div className="absolute inset-0 rounded-[3rem] bg-black" />
-
-      {/* Inset screen */}
-      <div
-        className="absolute bg-white flex flex-col overflow-hidden"
-        style={{ top: 10, left: 10, right: 10, bottom: 10, borderRadius: "2.5rem" }}
-      >
-        {/* Notch */}
-        <div className="flex items-center justify-center pt-3 pb-1 flex-shrink-0 bg-white relative z-10">
-          <div className="w-16 h-4 bg-black rounded-full" />
+        <div className="absolute inset-0 rounded-[3rem] bg-black" />
+        <div className="absolute bg-white flex flex-col overflow-hidden" style={{ top: 10, left: 10, right: 10, bottom: 10, borderRadius: "2.5rem" }}>
+          <div className="flex items-center justify-center pt-3 pb-1 flex-shrink-0 bg-white z-10">
+            <div className="w-16 h-4 bg-black rounded-full" />
+          </div>
+          <div className="relative flex-1 overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={index}
+                variants={teaserVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.35, ease: [0.2, 0, 0, 1] }}
+                className="absolute inset-0 flex flex-col"
+              >
+                {teaserScreens[index]}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </div>
 
-        {/* Animated screen content */}
-        <div className="relative flex-1 overflow-hidden">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={index}
-              variants={screenVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.35, ease: [0.2, 0, 0, 1] }}
-              className="absolute inset-0 flex flex-col"
-            >
-              {screens[index]}
-            </motion.div>
-          </AnimatePresence>
+        {/* Tap hint */}
+        <div className="absolute bottom-16 inset-x-0 flex justify-center pointer-events-none">
+          <span className="bg-black/70 text-white text-[9px] font-semibold px-3 py-1 rounded-full tracking-wide">
+            Tap to explore
+          </span>
         </div>
-      </div>
       </motion.div>
 
-      {/* Dot indicators */}
+      {/* Dots */}
       <div className="flex items-center gap-2">
-        {screens.map((_, i) => (
+        {teaserScreens.map((_, i) => (
           <div
             key={i}
             className="rounded-full transition-all duration-300"
-            style={{
-              width: i === index ? 20 : 6,
-              height: 6,
-              background: i === index ? "#06C167" : "#e5e7eb",
-            }}
+            style={{ width: i === index ? 20 : 6, height: 6, background: i === index ? "#06C167" : "#e5e7eb" }}
           />
         ))}
       </div>
@@ -212,73 +483,128 @@ const PhoneMockup = () => {
   );
 };
 
+// ─── Fullscreen interactive overlay ─────────────────────────────────────────
+const PhoneOverlay = ({ onClose }: { onClose: () => void }) => (
+  <motion.div
+    className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.2 }}
+    onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+  >
+    {/* Close button */}
+    <button
+      onClick={onClose}
+      className="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+      aria-label="Close"
+    >
+      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+        <path d="M18 6L6 18M6 6l12 12" />
+      </svg>
+    </button>
+
+    {/* Large interactive phone */}
+    <motion.div
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1,   opacity: 1 }}
+      exit={  { scale: 0.8, opacity: 0 }}
+      transition={{ type: "spring", damping: 22, stiffness: 300 }}
+      className="relative"
+      style={{ width: 320, height: 640 }}
+    >
+      <div className="absolute inset-0 rounded-[3rem] bg-black" />
+      <div className="absolute bg-white flex flex-col overflow-hidden" style={{ top: 12, left: 12, right: 12, bottom: 12, borderRadius: "2.6rem" }}>
+        {/* Notch */}
+        <div className="flex items-center justify-center pt-3 pb-1 flex-shrink-0 bg-white z-10">
+          <div className="w-16 h-4 bg-black rounded-full" />
+        </div>
+        {/* App */}
+        <div className="flex-1 overflow-hidden">
+          <InteractiveApp />
+        </div>
+      </div>
+    </motion.div>
+  </motion.div>
+);
+
+// ─── Hero ────────────────────────────────────────────────────────────────────
 const Hero = () => {
+  const [overlayOpen, setOverlayOpen] = useState(false);
   const ease = fadeInUp.transition.ease;
+
   return (
-    <section className="min-h-[90vh] flex items-center px-6 md:px-12 lg:px-20 py-20">
-      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+    <>
+      <section className="min-h-[90vh] flex items-center px-6 md:px-12 lg:px-20 py-20">
+        <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-        {/* Left — original content unchanged */}
-        <div>
-          <motion.div {...fadeInUp} className="mb-6">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-sm font-medium text-muted-foreground">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-              Uber Eats for Merchants
-            </span>
-          </motion.div>
+          {/* Left */}
+          <div>
+            <motion.div {...fadeInUp} className="mb-6">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-sm font-medium text-muted-foreground">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                Uber Eats for Merchants
+              </span>
+            </motion.div>
 
-          <motion.h1
-            {...fadeInUp}
-            transition={{ duration: 0.5, ease, delay: 0.1 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] mb-8"
-          >
-            Streamline your delivery
-            <br />
-            <span className="text-primary">with one powerful platform.</span>
-          </motion.h1>
+            <motion.h1
+              {...fadeInUp}
+              transition={{ duration: 0.5, ease, delay: 0.1 }}
+              className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] mb-8"
+            >
+              Streamline your delivery
+              <br />
+              <span className="text-primary">with one powerful platform.</span>
+            </motion.h1>
 
-          <motion.p
-            {...fadeInUp}
-            transition={{ duration: 0.5, ease, delay: 0.2 }}
-            className="body-text text-lg md:text-xl max-w-2xl mb-10"
-          >
-            Over 1 million merchants use Uber to reach more customers and
-            strengthen their delivery and pickup operations.
-          </motion.p>
+            <motion.p
+              {...fadeInUp}
+              transition={{ duration: 0.5, ease, delay: 0.2 }}
+              className="body-text text-lg md:text-xl max-w-2xl mb-10"
+            >
+              Over 1 million merchants use Uber to reach more customers and
+              strengthen their delivery and pickup operations.
+            </motion.p>
 
+            <motion.div
+              {...fadeInUp}
+              transition={{ duration: 0.5, ease, delay: 0.3 }}
+              className="flex flex-wrap gap-4"
+            >
+              <a
+                href="#calculator"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-lg bg-secondary text-foreground font-medium text-base hover:bg-border transition-colors"
+              >
+                See the numbers
+              </a>
+              <a
+                href="https://merchants.ubereats.com/us/en/s/signup/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-8 py-4 rounded-lg bg-primary text-primary-foreground font-medium text-base hover:bg-primary-hover transition-colors active:scale-[0.98]"
+              >
+                Get started
+              </a>
+            </motion.div>
+          </div>
+
+          {/* Right — teaser phone */}
           <motion.div
             {...fadeInUp}
-            transition={{ duration: 0.5, ease, delay: 0.3 }}
-            className="flex flex-wrap gap-4"
+            transition={{ duration: 0.6, ease, delay: 0.4 }}
+            className="hidden lg:flex justify-center items-center"
           >
-            <a
-              href="#calculator"
-              className="inline-flex items-center justify-center px-8 py-4 rounded-lg bg-secondary text-foreground font-medium text-base hover:bg-border transition-colors"
-            >
-              See the numbers
-            </a>
-            <a
-              href="https://merchants.ubereats.com/us/en/s/signup/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-8 py-4 rounded-lg bg-primary text-primary-foreground font-medium text-base hover:bg-primary-hover transition-colors active:scale-[0.98]"
-            >
-              Get started
-            </a>
+            <PhoneMockup onClick={() => setOverlayOpen(true)} />
           </motion.div>
+
         </div>
+      </section>
 
-        {/* Right — animated phone, desktop only */}
-        <motion.div
-          {...fadeInUp}
-          transition={{ duration: 0.6, ease, delay: 0.4 }}
-          className="hidden lg:flex justify-center items-center"
-        >
-          <PhoneMockup />
-        </motion.div>
-
-      </div>
-    </section>
+      {/* Interactive overlay */}
+      <AnimatePresence>
+        {overlayOpen && <PhoneOverlay onClose={() => setOverlayOpen(false)} />}
+      </AnimatePresence>
+    </>
   );
 };
 
