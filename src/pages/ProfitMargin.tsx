@@ -105,10 +105,7 @@ const ProfitMargin = () => {
                   max={50}
                   value={orderValue}
                   onChange={(e) => setOrderValue(Number(e.target.value))}
-                  className="flex-1 h-1 rounded-full appearance-none cursor-pointer"
-                  style={{
-                    background: `linear-gradient(to right, #06C167 0%, #06C167 ${((orderValue - 10) / 40) * 100}%, #e5e7eb ${((orderValue - 10) / 40) * 100}%, #e5e7eb 100%)`,
-                  }}
+                  className="flex-1 h-1 rounded-full appearance-none cursor-pointer bg-gray-200"
                 />
                 {isEditing ? (
                   <div className="flex items-center gap-2">
