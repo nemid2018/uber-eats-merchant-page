@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { fadeInUp } from "../lib/animations";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { Car, CreditCard, Shield, Smartphone, Megaphone, TrendingUp, Utensils } from "lucide-react";
+import { Car, CreditCard, Shield, Smartphone, Megaphone, TrendingUp } from "lucide-react";
 
 const ProfitMargin = () => {
   const [orderValue, setOrderValue] = useState(20);
@@ -22,50 +22,44 @@ const ProfitMargin = () => {
     {
       label: "Delivery partner pay",
       pct: 0.46,
+      color: "bg-primary",
       Icon: Car,
       description: "The driver who picks up & delivers the food",
-      borderColor: "border-l-[#06C167]",
-      iconColor: "text-[#06C167]",
     },
     {
       label: "Payment processing",
       pct: 0.10,
+      color: "bg-blue-500",
       Icon: CreditCard,
       description: "Credit card fees, fraud protection, refunds",
-      borderColor: "border-l-blue-500",
-      iconColor: "text-blue-500",
     },
     {
       label: "Insurance & safety",
       pct: 0.06,
+      color: "bg-amber-500",
       Icon: Shield,
       description: "Driver insurance, accident coverage, background checks",
-      borderColor: "border-l-amber-500",
-      iconColor: "text-amber-500",
     },
     {
       label: "Technology & support",
       pct: 0.12,
+      color: "bg-violet-500",
       Icon: Smartphone,
       description: "The app, GPS routing, 24/7 customer support, order tracking",
-      borderColor: "border-l-violet-500",
-      iconColor: "text-violet-500",
     },
     {
       label: "Marketing & promos",
       pct: 0.10,
+      color: "bg-rose-500",
       Icon: Megaphone,
       description: "Bringing new customers to your restaurant",
-      borderColor: "border-l-rose-500",
-      iconColor: "text-rose-500",
     },
     {
       label: "Uber's actual profit",
       pct: 0.16,
+      color: "bg-emerald-500",
       Icon: TrendingUp,
       description: "What Uber actually keeps at the end of the day",
-      borderColor: "border-l-emerald-600",
-      iconColor: "text-emerald-600",
     },
   ];
 
@@ -163,20 +157,20 @@ const ProfitMargin = () => {
 
             {/* The big picture */}
             <div className="mb-10">
-              {/* Two-tone bar */}
-              <div className="flex rounded-lg overflow-hidden h-10 mb-6">
-                <div
-                  className="bg-primary flex items-center justify-center text-sm font-bold text-white"
-                  style={{ width: "75%" }}
-                >
-                  You keep 75%
-                </div>
-                <div
-                  className="bg-[#1a1a1a] flex items-center justify-center text-sm font-bold text-white"
-                  style={{ width: "25%" }}
-                >
-                  Uber 25%
-                </div>
+              {/* Multicolored segmented bar */}
+              <div className="flex rounded-xl overflow-hidden h-12 mb-6">
+                {breakdown.map((item) => (
+                  <div
+                    key={item.label}
+                    className={`${item.color} relative`}
+                    style={{ width: `${item.pct * 100}%` }}
+                    title={`${item.label}: $${(commission * item.pct).toFixed(2)}`}
+                  >
+                    <span className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">
+                      {Math.round(item.pct * 100)}%
+                    </span>
+                  </div>
+                ))}
               </div>
 
               <div className="flex flex-col md:flex-row md:items-start gap-6">
@@ -220,17 +214,18 @@ const ProfitMargin = () => {
             </h2>
             <p className="text-sm text-muted-foreground mb-8">Breakdown of Uber's 25% commission</p>
 
-            {/* Line items — colored left border + card */}
-            <div className="space-y-3 mb-4">
-              {breakdown.map((item) => {
+            {/* Line items — borderless with dividers */}
+            <div className="mb-4">
+              {breakdown.map((item, i) => {
                 const { Icon } = item;
                 const amount = commission * item.pct;
+                const isLast = i === breakdown.length - 1;
                 return (
                   <div
                     key={item.label}
-                    className={`flex items-center gap-4 bg-card rounded-xl p-5 border border-border border-l-4 ${item.borderColor}`}
+                    className={`flex items-center gap-4 py-5 ${!isLast ? "border-b border-border" : ""}`}
                   >
-                    <div className={`w-8 h-8 flex items-center justify-center shrink-0 ${item.iconColor}`}>
+                    <div className="w-8 h-8 flex items-center justify-center shrink-0 text-muted-foreground">
                       <Icon size={18} strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -259,56 +254,48 @@ const ProfitMargin = () => {
         {/* Context */}
         <section className="px-6 md:px-12 lg:px-20 pb-16">
           <motion.div {...fadeInUp} className="max-w-3xl mx-auto">
-            <h2 className="text-2xl font-bold mb-8">Putting it in context</h2>
+            <h2 className="text-2xl font-bold mb-6">Putting it in context</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-gray-50 rounded-xl p-6">
-                <div className="w-9 h-9 flex items-center justify-center mb-3 text-muted-foreground">
-                  <TrendingUp size={20} strokeWidth={1.5} />
-                </div>
-                <h3 className="font-semibold mb-3">
+              <div className="bg-card rounded-xl p-6 border border-border">
+                <span className="text-3xl block mb-3">🏦</span>
+                <h3 className="font-semibold mb-2">
                   Uber's company-wide profit margin
                 </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground">
                   In 2024 Uber's Adjusted EBITDA margin was just{" "}
-                  <span className="font-bold text-primary">4%</span> of gross
+                  <span className="font-bold text-foreground">4%</span> of gross
                   bookings — and the delivery segment is even thinner than the
                   rides business.
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-xl p-6">
-                <div className="w-9 h-9 flex items-center justify-center mb-3 text-muted-foreground">
-                  <Utensils size={20} strokeWidth={1.5} />
-                </div>
-                <h3 className="font-semibold mb-3">
+              <div className="bg-card rounded-xl p-6 border border-border">
+                <span className="text-3xl block mb-3">🍕</span>
+                <h3 className="font-semibold mb-2">
                   Compare: typical restaurant margin
                 </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground">
                   The average restaurant runs on a{" "}
-                  <span className="font-bold text-primary">3–9%</span> net
+                  <span className="font-bold text-foreground">3–9%</span> net
                   profit margin. Uber's delivery margin is in the same ballpark
                   — razor-thin.
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-xl p-6">
-                <div className="w-9 h-9 flex items-center justify-center mb-3 text-muted-foreground">
-                  <Car size={20} strokeWidth={1.5} />
-                </div>
-                <h3 className="font-semibold mb-3">Half goes to the driver</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+              <div className="bg-card rounded-xl p-6 border border-border">
+                <span className="text-3xl block mb-3">🚗</span>
+                <h3 className="font-semibold mb-2">Half goes to the driver</h3>
+                <p className="text-sm text-muted-foreground">
                   The single biggest expense is paying the delivery partner. If
                   you hired your own driver, you'd be paying similar or more —
                   plus insurance, gas, and management overhead.
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-xl p-6">
-                <div className="w-9 h-9 flex items-center justify-center mb-3 text-muted-foreground">
-                  <Smartphone size={20} strokeWidth={1.5} />
-                </div>
-                <h3 className="font-semibold mb-3">You get the tech for free</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+              <div className="bg-card rounded-xl p-6 border border-border">
+                <span className="text-3xl block mb-3">📱</span>
+                <h3 className="font-semibold mb-2">You get the tech for free</h3>
+                <p className="text-sm text-muted-foreground">
                   Building your own ordering app, payment system, GPS tracking,
                   and customer support would cost{" "}
-                  <span className="font-bold text-primary">
+                  <span className="font-bold text-foreground">
                     $50K–$200K/year
                   </span>
                   . It's baked into the commission.
