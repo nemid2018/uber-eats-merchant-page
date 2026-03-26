@@ -141,21 +141,27 @@ const screens = [
 ];
 
 const screenVariants = {
-  enter: { opacity: 0, y: 8 },
+  enter: { opacity: 0, y: 20 },
   center: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
+  exit: { opacity: 0, y: -20 },
 };
 
 const PhoneMockup = () => {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const id = setInterval(() => setIndex((i) => (i + 1) % screens.length), 2800);
+    const id = setInterval(() => setIndex((i) => (i + 1) % screens.length), 4500);
     return () => clearInterval(id);
   }, []);
 
   return (
-    <div className="relative rotate-3" style={{ width: 260, height: 540 }}>
+    <div className="flex flex-col items-center gap-4">
+      <motion.div
+        className="relative rotate-2"
+        style={{ width: 260, height: 540 }}
+        animate={{ y: [0, -10, 0] }}
+        transition={{ duration: 4, ease: "easeInOut", repeat: Infinity }}
+      >
       {/* Black bezel */}
       <div className="absolute inset-0 rounded-[3rem] bg-black" />
 
@@ -185,6 +191,22 @@ const PhoneMockup = () => {
             </motion.div>
           </AnimatePresence>
         </div>
+      </div>
+      </motion.div>
+
+      {/* Dot indicators */}
+      <div className="flex items-center gap-2">
+        {screens.map((_, i) => (
+          <div
+            key={i}
+            className="rounded-full transition-all duration-300"
+            style={{
+              width: i === index ? 20 : 6,
+              height: 6,
+              background: i === index ? "#06C167" : "#e5e7eb",
+            }}
+          />
+        ))}
       </div>
     </div>
   );
