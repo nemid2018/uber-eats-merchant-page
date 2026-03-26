@@ -187,6 +187,23 @@ const ProfitMargin = () => {
               </p>
             </div>
 
+            {/* The punchline */}
+            <div className="bg-primary/5 border-2 border-primary rounded-2xl p-8 md:p-10 text-center mb-10">
+              <p className="text-muted-foreground mb-2 text-sm font-medium">
+                Out of a ${orderValue.toFixed(2)} order, Uber's actual profit is
+              </p>
+              <span className="text-6xl md:text-7xl font-mono font-bold text-primary block mb-2">
+                ${uberProfit.toFixed(2)}
+              </span>
+              <p className="text-muted-foreground text-lg">
+                That's{" "}
+                <span className="font-bold text-foreground">
+                  {((uberProfit / orderValue) * 100).toFixed(1)}%
+                </span>{" "}
+                of the order value.
+              </p>
+            </div>
+
             {/* Where every dollar goes */}
             <h2 className="text-2xl font-bold mb-6">
               Where your ${commission.toFixed(2)} actually goes
@@ -232,23 +249,6 @@ const ProfitMargin = () => {
                   </div>
                 );
               })}
-            </div>
-
-            {/* The punchline */}
-            <div className="bg-primary/5 border-2 border-primary rounded-2xl p-8 md:p-10 text-center mb-10">
-              <p className="text-muted-foreground mb-2 text-sm font-medium">
-                Out of a ${orderValue.toFixed(2)} order, Uber's actual profit is
-              </p>
-              <span className="text-6xl md:text-7xl font-mono font-bold text-primary block mb-2">
-                ${uberProfit.toFixed(2)}
-              </span>
-              <p className="text-muted-foreground text-lg">
-                That's{" "}
-                <span className="font-bold text-foreground">
-                  {((uberProfit / orderValue) * 100).toFixed(1)}%
-                </span>{" "}
-                of the order value.
-              </p>
             </div>
           </motion.div>
         </section>
