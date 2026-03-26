@@ -5,10 +5,10 @@ const Hero = () => {
   const ease = fadeInUp.transition.ease;
   return (
     <section className="min-h-[90vh] flex items-center px-6 md:px-12 lg:px-20 py-20">
-      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16">
+      <div className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
-        {/* Left column — existing content unchanged */}
-        <div className="flex flex-col justify-center">
+        {/* Left column */}
+        <div>
           <motion.div {...fadeInUp} className="mb-6">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-sm font-medium text-muted-foreground">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
@@ -57,65 +57,58 @@ const Hero = () => {
           </motion.div>
         </div>
 
-        {/* Right column — dashboard mockup, desktop only */}
+        {/* Right column — phone mockup, desktop only */}
         <motion.div
           {...fadeInUp}
-          transition={{ duration: 0.5, ease, delay: 0.4 }}
-          className="hidden lg:flex items-center justify-center"
+          transition={{ duration: 0.6, ease, delay: 0.4 }}
+          className="hidden lg:flex justify-center items-center"
         >
-          <div className="w-full max-w-md rounded-2xl overflow-hidden shadow-2xl border border-border bg-card text-sm font-medium">
+          {/* Phone frame */}
+          <div className="relative w-64 h-[540px] rounded-[3rem] bg-black border-[6px] border-black rotate-3">
+            {/* Notch */}
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 w-20 h-5 bg-black rounded-full z-10" />
 
-            {/* Header bar */}
-            <div className="bg-foreground px-5 py-4 flex items-center justify-between">
-              <span className="text-background font-semibold tracking-tight">Merchant Dashboard</span>
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-semibold">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                Live
-              </span>
-            </div>
+            {/* Screen */}
+            <div className="w-full h-full rounded-[2.4rem] overflow-hidden bg-white flex flex-col">
 
-            {/* Stats row */}
-            <div className="grid grid-cols-3 divide-x divide-border border-b border-border">
-              {[
-                { label: "Today's Orders", value: "84" },
-                { label: "Revenue", value: "$1,240" },
-                { label: "Avg Rating", value: "4.8 ★" },
-              ].map((stat) => (
-                <div key={stat.label} className="flex flex-col items-center py-5 px-3 gap-1">
-                  <span className="text-2xl font-bold text-foreground">{stat.value}</span>
-                  <span className="text-xs text-muted-foreground text-center">{stat.label}</span>
-                </div>
-              ))}
-            </div>
+              {/* Green header */}
+              <div className="bg-[#06C167] px-5 pt-10 pb-5">
+                <p className="text-white text-xs font-semibold tracking-widest uppercase mb-1">Order confirmed</p>
+                <p className="text-white text-xl font-bold leading-tight">Your food<br />is being prepared</p>
+              </div>
 
-            {/* Recent orders */}
-            <div className="px-5 py-4">
-              <p className="text-xs text-muted-foreground uppercase tracking-widest mb-3">Recent Orders</p>
-              <div className="flex flex-col gap-3">
+              {/* Order items */}
+              <div className="flex-1 px-5 py-4 flex flex-col gap-3">
+                <p className="text-[10px] font-semibold tracking-widest uppercase text-gray-400">Your order</p>
+
                 {[
-                  { id: "#4821", item: "Spicy Ramen Bowl", status: "Preparing", badge: "bg-yellow-100 text-yellow-700" },
-                  { id: "#4820", item: "Avocado Burger", status: "On the way", badge: "bg-blue-100 text-blue-700" },
-                  { id: "#4819", item: "Margherita Pizza", status: "Delivered", badge: "bg-green-100 text-green-700" },
-                ].map((order) => (
-                  <div key={order.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-foreground font-semibold">{order.item}</span>
-                      <span className="text-xs text-muted-foreground">{order.id}</span>
+                  { qty: 1, name: "Spicy Ramen Bowl", price: "$14.99" },
+                  { qty: 2, name: "Gyoza (6 pcs)", price: "$9.50" },
+                  { qty: 1, name: "Matcha Lemonade", price: "$4.99" },
+                ].map((item) => (
+                  <div key={item.name} className="flex justify-between items-start">
+                    <div className="flex gap-2">
+                      <span className="text-xs text-gray-400 w-4">{item.qty}×</span>
+                      <span className="text-xs text-gray-800 font-medium leading-tight">{item.name}</span>
                     </div>
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${order.badge}`}>
-                      {order.status}
-                    </span>
+                    <span className="text-xs text-gray-800 font-medium shrink-0">{item.price}</span>
                   </div>
                 ))}
+
+                <div className="mt-auto pt-3 border-t border-gray-100 flex justify-between">
+                  <span className="text-xs font-bold text-gray-900">Total</span>
+                  <span className="text-xs font-bold text-gray-900">$29.48</span>
+                </div>
               </div>
-            </div>
 
-            {/* Footer bar */}
-            <div className="bg-primary px-5 py-3 flex items-center justify-between">
-              <span className="text-primary-foreground text-xs font-semibold">3 active deliveries</span>
-              <span className="text-primary-foreground text-xs opacity-80">Updated just now</span>
-            </div>
+              {/* Track button */}
+              <div className="px-5 pb-6">
+                <div className="w-full bg-black rounded-xl py-3 flex items-center justify-center">
+                  <span className="text-white text-xs font-bold tracking-wide">Track order</span>
+                </div>
+              </div>
 
+            </div>
           </div>
         </motion.div>
 
