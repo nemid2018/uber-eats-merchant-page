@@ -161,38 +161,6 @@ const ProfitMargin = () => {
               </div>
             </div>
 
-            {/* Segmented bar — muted premium palette */}
-            <div className="flex rounded-full overflow-hidden h-10 mb-4">
-              {breakdown.map((item) => (
-                <div
-                  key={item.label}
-                  className="relative"
-                  style={{ width: `${item.pct * 100}%`, backgroundColor: item.hex }}
-                  title={`${item.label}: $${(commission * item.pct).toFixed(2)}`}
-                >
-                  <span
-                    className="absolute inset-0 flex items-center justify-center text-xs font-semibold"
-                    style={{ color: item.textColor }}
-                  >
-                    {Math.round(item.pct * 100)}%
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Legend */}
-            <div className="flex flex-wrap gap-x-5 gap-y-2 mb-6">
-              {breakdown.map((item) => (
-                <div key={item.label} className="flex items-center gap-1.5">
-                  <span
-                    className="w-2.5 h-2.5 rounded-full shrink-0 border border-black/10"
-                    style={{ backgroundColor: item.hex }}
-                  />
-                  <span className="text-xs text-muted-foreground">{item.label}</span>
-                </div>
-              ))}
-            </div>
-
             {/* Stats card */}
             <div className="bg-card rounded-2xl p-8 shadow-card border border-border mb-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
@@ -237,7 +205,39 @@ const ProfitMargin = () => {
             <h2 className="text-xl font-bold mb-2 text-foreground">
               Where your ${commission.toFixed(2)} actually goes
             </h2>
-            <p className="text-sm text-muted-foreground mb-8">Breakdown of Uber's 25% commission</p>
+            <p className="text-sm text-muted-foreground mb-6">Breakdown of Uber's 25% commission</p>
+
+            {/* Segmented bar — muted premium palette */}
+            <div className="flex rounded-full overflow-hidden h-10 mb-4">
+              {breakdown.map((item) => (
+                <div
+                  key={item.label}
+                  className="relative"
+                  style={{ width: `${item.pct * 100}%`, backgroundColor: item.hex }}
+                  title={`${item.label}: $${(commission * item.pct).toFixed(2)}`}
+                >
+                  <span
+                    className="absolute inset-0 flex items-center justify-center text-xs font-semibold"
+                    style={{ color: item.textColor }}
+                  >
+                    {Math.round(item.pct * 100)}%
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Legend */}
+            <div className="flex flex-wrap gap-x-5 gap-y-2 mb-8">
+              {breakdown.map((item) => (
+                <div key={item.label} className="flex items-center gap-1.5">
+                  <span
+                    className="w-2.5 h-2.5 rounded-full shrink-0 border border-black/10"
+                    style={{ backgroundColor: item.hex }}
+                  />
+                  <span className="text-xs text-muted-foreground">{item.label}</span>
+                </div>
+              ))}
+            </div>
 
             {/* Line items — borderless with dividers */}
             <div className="mb-4">
