@@ -103,7 +103,7 @@ const FlipCard = ({ feature, index }: { feature: typeof features[0]; index: numb
     <motion.div
       {...fadeInUp}
       transition={{ duration: 0.5, ease, delay: index * 0.08 }}
-      className="perspective-[1000px] cursor-pointer h-[220px]"
+      className="perspective-[1000px] cursor-pointer min-h-[220px]"
       onClick={() => setFlipped(!flipped)}
     >
       <motion.div
@@ -127,10 +127,10 @@ const FlipCard = ({ feature, index }: { feature: typeof features[0]; index: numb
 
         {/* Back */}
         <div
-          className="absolute inset-0 bg-primary text-primary-foreground rounded-xl p-8 overflow-hidden"
+          className="absolute inset-0 bg-primary text-primary-foreground rounded-xl p-8 overflow-hidden flex flex-col justify-center gap-4"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold">{feature.title}</h3>
             <div className="w-10 h-10 rounded-lg bg-primary-foreground/20 flex items-center justify-center flex-shrink-0">
               {feature.icon}
@@ -144,7 +144,6 @@ const FlipCard = ({ feature, index }: { feature: typeof features[0]; index: numb
               </li>
             ))}
           </ul>
-          <p className="text-xs opacity-50 mt-4">Click to flip back</p>
         </div>
       </motion.div>
     </motion.div>
