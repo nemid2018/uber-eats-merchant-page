@@ -433,8 +433,6 @@ const PhoneMockup = ({ onClick }: { onClick: () => void }) => {
       <motion.div
         className="relative rotate-2 cursor-pointer"
         style={{ width: 260, height: 540 }}
-        animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 4, ease: "easeInOut", repeat: Infinity }}
         onClick={onClick}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
@@ -468,17 +466,6 @@ const PhoneMockup = ({ onClick }: { onClick: () => void }) => {
           </span>
         </div>
       </motion.div>
-
-      {/* Dots */}
-      <div className="flex items-center gap-2">
-        {teaserScreens.map((_, i) => (
-          <div
-            key={i}
-            className="rounded-full transition-all duration-300"
-            style={{ width: i === index ? 20 : 6, height: 6, background: i === index ? "#06C167" : "#e5e7eb" }}
-          />
-        ))}
-      </div>
     </div>
   );
 };
