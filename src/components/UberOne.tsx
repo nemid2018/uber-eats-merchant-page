@@ -97,7 +97,7 @@ const FlipCard = ({ benefit, index }: { benefit: typeof benefits[0]; index: numb
 
         {/* Back */}
         <div
-          className="absolute inset-0 bg-primary text-primary-foreground rounded-xl p-8 overflow-hidden flex flex-col justify-center"
+          className="absolute inset-0 bg-primary text-primary-foreground rounded-xl p-8 overflow-hidden"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
           <div className="flex items-center justify-between mb-4">
@@ -114,7 +114,6 @@ const FlipCard = ({ benefit, index }: { benefit: typeof benefits[0]; index: numb
               </li>
             ))}
           </ul>
-          <p className="text-xs opacity-50 mt-4">Click to flip back</p>
         </div>
       </motion.div>
     </motion.div>
