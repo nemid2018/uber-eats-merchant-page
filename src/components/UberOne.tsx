@@ -97,10 +97,10 @@ const FlipCard = ({ benefit, index }: { benefit: typeof benefits[0]; index: numb
 
         {/* Back */}
         <div
-          className="absolute inset-0 bg-primary text-primary-foreground rounded-xl p-8 overflow-hidden"
+          className="absolute inset-0 bg-primary text-primary-foreground rounded-xl p-8 overflow-hidden flex flex-col justify-center gap-4"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold">{benefit.title}</h3>
             <div className="w-10 h-10 rounded-lg bg-primary-foreground/20 flex items-center justify-center flex-shrink-0">
               {benefit.icon}
