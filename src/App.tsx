@@ -11,7 +11,7 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
+    <BrowserRouter basename="/uber-eats-merchant-page">
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/success-stories" element={<SuccessStories />} />
