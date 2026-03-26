@@ -161,73 +161,76 @@ const ProfitMargin = () => {
               </div>
             </div>
 
-            {/* The big picture */}
-            <div className="mb-10">
-              {/* Segmented bar — muted premium palette */}
-              <div className="flex rounded-full overflow-hidden h-10 mb-4">
-                {breakdown.map((item) => (
-                  <div
-                    key={item.label}
-                    className="relative"
-                    style={{ width: `${item.pct * 100}%`, backgroundColor: item.hex }}
-                    title={`${item.label}: $${(commission * item.pct).toFixed(2)}`}
+            {/* Segmented bar — muted premium palette */}
+            <div className="flex rounded-full overflow-hidden h-10 mb-4">
+              {breakdown.map((item) => (
+                <div
+                  key={item.label}
+                  className="relative"
+                  style={{ width: `${item.pct * 100}%`, backgroundColor: item.hex }}
+                  title={`${item.label}: $${(commission * item.pct).toFixed(2)}`}
+                >
+                  <span
+                    className="absolute inset-0 flex items-center justify-center text-xs font-semibold"
+                    style={{ color: item.textColor }}
                   >
-                    <span
-                      className="absolute inset-0 flex items-center justify-center text-xs font-semibold"
-                      style={{ color: item.textColor }}
-                    >
-                      {Math.round(item.pct * 100)}%
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Legend */}
-              <div className="flex flex-wrap gap-x-5 gap-y-2 mb-6">
-                {breakdown.map((item) => (
-                  <div key={item.label} className="flex items-center gap-1.5">
-                    <span
-                      className="w-2.5 h-2.5 rounded-full shrink-0 border border-black/10"
-                      style={{ backgroundColor: item.hex }}
-                    />
-                    <span className="text-xs text-muted-foreground">{item.label}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex flex-col md:flex-row md:items-start gap-6">
-                <div className="flex-1">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Customer pays</span>
-                  <span className="text-4xl font-mono font-bold">${orderValue.toFixed(2)}</span>
+                    {Math.round(item.pct * 100)}%
+                  </span>
                 </div>
-                <div className="flex-1">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">You keep</span>
-                  <span className="text-4xl font-mono font-bold text-primary">${(orderValue - commission).toFixed(2)}</span>
+              ))}
+            </div>
+
+            {/* Legend */}
+            <div className="flex flex-wrap gap-x-5 gap-y-2 mb-6">
+              {breakdown.map((item) => (
+                <div key={item.label} className="flex items-center gap-1.5">
+                  <span
+                    className="w-2.5 h-2.5 rounded-full shrink-0 border border-black/10"
+                    style={{ backgroundColor: item.hex }}
+                  />
+                  <span className="text-xs text-muted-foreground">{item.label}</span>
                 </div>
-                <div className="flex-1">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Uber's cut</span>
-                  <span className="text-4xl font-mono font-bold text-[#1a1a1a]">${commission.toFixed(2)}</span>
+              ))}
+            </div>
+
+            {/* Stats card */}
+            <div className="bg-card rounded-2xl p-8 shadow-card border border-border mb-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-6">
+                <div>
+                  <span className="text-sm text-muted-foreground block mb-1">Customer pays</span>
+                  <span className="text-5xl font-mono font-bold">${orderValue.toFixed(2)}</span>
+                </div>
+                <div className="text-4xl hidden md:block text-muted-foreground">→</div>
+                <div>
+                  <span className="text-sm text-muted-foreground block mb-1">You keep (75%)</span>
+                  <span className="text-5xl font-mono font-bold text-primary">${(orderValue - commission).toFixed(2)}</span>
+                </div>
+                <div className="text-4xl hidden md:block text-muted-foreground">|</div>
+                <div>
+                  <span className="text-sm text-muted-foreground block mb-1">Uber's cut (25%)</span>
+                  <span className="text-5xl font-mono font-bold text-muted-foreground">${commission.toFixed(2)}</span>
                 </div>
               </div>
-
-              <p className="text-sm text-muted-foreground mt-4">
-                On the Plus plan (25% commission). But that ${commission.toFixed(2)} doesn't go into Uber's pocket ↓
+              <p className="text-sm text-muted-foreground">
+                On the Plus plan (25% commission). But that ${commission.toFixed(2)} doesn't go into Uber's pocket. Here's where it actually goes ↓
               </p>
             </div>
 
-            {/* The punchline */}
-            <div className="border-l-4 border-primary pl-6 mb-12">
-              <p className="text-sm text-muted-foreground mb-1">
+            {/* Punchline card */}
+            <div className="bg-primary/5 border-2 border-primary rounded-2xl p-8 md:p-10 text-center mb-10">
+              <p className="text-muted-foreground mb-2 text-sm font-medium">
                 Out of a ${orderValue.toFixed(2)} order, Uber's actual profit is
               </p>
-              <div className="flex items-baseline gap-3">
-                <span className="text-5xl font-mono font-bold text-primary">
-                  ${uberProfit.toFixed(2)}
-                </span>
-                <span className="text-muted-foreground text-lg">
-                  ({((uberProfit / orderValue) * 100).toFixed(1)}% of order value)
-                </span>
-              </div>
+              <span className="text-6xl md:text-7xl font-mono font-bold text-primary block mb-2">
+                ${uberProfit.toFixed(2)}
+              </span>
+              <p className="text-muted-foreground text-lg">
+                That's{" "}
+                <span className="font-bold text-foreground">
+                  {((uberProfit / orderValue) * 100).toFixed(1)}%
+                </span>{" "}
+                of the order value.
+              </p>
             </div>
 
             {/* Where every dollar goes */}
