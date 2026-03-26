@@ -73,8 +73,7 @@ const FlipCard = ({ benefit, index }: { benefit: typeof benefits[0]; index: numb
     <motion.div
       {...fadeInUp}
       transition={{ duration: 0.5, ease, delay: index * 0.08 }}
-      className="cursor-pointer h-[280px]"
-      style={{ perspective: "1000px" }}
+      className="perspective-[1000px] cursor-pointer h-[220px]"
       onClick={() => setFlipped(!flipped)}
     >
       <motion.div
@@ -98,7 +97,7 @@ const FlipCard = ({ benefit, index }: { benefit: typeof benefits[0]; index: numb
 
         {/* Back */}
         <div
-          className="absolute inset-0 bg-primary text-primary-foreground rounded-xl p-6"
+          className="absolute inset-0 bg-primary text-primary-foreground rounded-xl p-8 overflow-hidden flex flex-col justify-center"
           style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
         >
           <div className="flex items-center justify-between mb-4">
