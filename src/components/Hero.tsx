@@ -480,17 +480,6 @@ const PhoneOverlay = ({ onClose }: { onClose: () => void }) => (
     transition={{ duration: 0.2 }}
     onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
   >
-    {/* Close button */}
-    <button
-      onClick={onClose}
-      className="absolute top-6 right-6 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
-      aria-label="Close"
-    >
-      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-        <path d="M18 6L6 18M6 6l12 12" />
-      </svg>
-    </button>
-
     {/* Large interactive phone */}
     <motion.div
       initial={{ scale: 0.8, opacity: 0 }}
@@ -500,6 +489,16 @@ const PhoneOverlay = ({ onClose }: { onClose: () => void }) => (
       className="relative"
       style={{ width: 320, height: 640 }}
     >
+      {/* Close button — anchored to top-right of phone frame */}
+      <button
+        onClick={onClose}
+        className="absolute -top-3 -right-3 z-10 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100 transition-colors"
+        aria-label="Close"
+      >
+        <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="#111" strokeWidth="2.5" strokeLinecap="round">
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
       <div className="absolute inset-0 rounded-[3rem] bg-black" />
       <div className="absolute bg-white flex flex-col overflow-hidden" style={{ top: 12, left: 12, right: 12, bottom: 12, borderRadius: "2.6rem" }}>
         {/* Notch */}
