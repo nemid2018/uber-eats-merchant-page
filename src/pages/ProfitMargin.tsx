@@ -24,36 +24,48 @@ const ProfitMargin = () => {
       pct: 0.46,
       Icon: Car,
       description: "The driver who picks up & delivers the food",
+      borderColor: "border-l-[#06C167]",
+      iconColor: "text-[#06C167]",
     },
     {
       label: "Payment processing",
       pct: 0.10,
       Icon: CreditCard,
       description: "Credit card fees, fraud protection, refunds",
+      borderColor: "border-l-blue-500",
+      iconColor: "text-blue-500",
     },
     {
       label: "Insurance & safety",
       pct: 0.06,
       Icon: Shield,
       description: "Driver insurance, accident coverage, background checks",
+      borderColor: "border-l-amber-500",
+      iconColor: "text-amber-500",
     },
     {
       label: "Technology & support",
       pct: 0.12,
       Icon: Smartphone,
       description: "The app, GPS routing, 24/7 customer support, order tracking",
+      borderColor: "border-l-violet-500",
+      iconColor: "text-violet-500",
     },
     {
       label: "Marketing & promos",
       pct: 0.10,
       Icon: Megaphone,
       description: "Bringing new customers to your restaurant",
+      borderColor: "border-l-rose-500",
+      iconColor: "text-rose-500",
     },
     {
       label: "Uber's actual profit",
       pct: 0.16,
       Icon: TrendingUp,
       description: "What Uber actually keeps at the end of the day",
+      borderColor: "border-l-emerald-600",
+      iconColor: "text-emerald-600",
     },
   ];
 
@@ -208,18 +220,17 @@ const ProfitMargin = () => {
             </h2>
             <p className="text-sm text-muted-foreground mb-8">Breakdown of Uber's 25% commission</p>
 
-            {/* Line items — borderless with dividers */}
-            <div className="mb-4">
-              {breakdown.map((item, i) => {
+            {/* Line items — colored left border + card */}
+            <div className="space-y-3 mb-4">
+              {breakdown.map((item) => {
                 const { Icon } = item;
                 const amount = commission * item.pct;
-                const isLast = i === breakdown.length - 1;
                 return (
                   <div
                     key={item.label}
-                    className={`flex items-center gap-4 py-5 ${!isLast ? "border-b border-border" : ""}`}
+                    className={`flex items-center gap-4 bg-card rounded-xl p-5 border border-border border-l-4 ${item.borderColor}`}
                   >
-                    <div className="w-8 h-8 flex items-center justify-center shrink-0 text-muted-foreground">
+                    <div className={`w-8 h-8 flex items-center justify-center shrink-0 ${item.iconColor}`}>
                       <Icon size={18} strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
