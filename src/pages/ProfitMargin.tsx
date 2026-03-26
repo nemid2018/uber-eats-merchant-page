@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { fadeInUp } from "../lib/animations";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { Car, CreditCard, Shield, Smartphone, Megaphone, TrendingUp } from "lucide-react";
+import { Car, CreditCard, Shield, Smartphone, Megaphone, TrendingUp, Utensils } from "lucide-react";
 
 const ProfitMargin = () => {
   const [orderValue, setOrderValue] = useState(20);
@@ -248,48 +248,56 @@ const ProfitMargin = () => {
         {/* Context */}
         <section className="px-6 md:px-12 lg:px-20 pb-16">
           <motion.div {...fadeInUp} className="max-w-3xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6">Putting it in context</h2>
+            <h2 className="text-2xl font-bold mb-8">Putting it in context</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-card rounded-xl p-6 border border-border">
-                <span className="text-3xl block mb-3">🏦</span>
-                <h3 className="font-semibold mb-2">
+              <div className="bg-gray-50 rounded-xl p-8">
+                <div className="w-9 h-9 flex items-center justify-center mb-5 text-muted-foreground">
+                  <TrendingUp size={20} strokeWidth={1.5} />
+                </div>
+                <h3 className="font-semibold mb-3">
                   Uber's company-wide profit margin
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   In 2024 Uber's Adjusted EBITDA margin was just{" "}
-                  <span className="font-bold text-foreground">4%</span> of gross
+                  <span className="font-bold text-primary">4%</span> of gross
                   bookings — and the delivery segment is even thinner than the
                   rides business.
                 </p>
               </div>
-              <div className="bg-card rounded-xl p-6 border border-border">
-                <span className="text-3xl block mb-3">🍕</span>
-                <h3 className="font-semibold mb-2">
+              <div className="bg-gray-50 rounded-xl p-8">
+                <div className="w-9 h-9 flex items-center justify-center mb-5 text-muted-foreground">
+                  <Utensils size={20} strokeWidth={1.5} />
+                </div>
+                <h3 className="font-semibold mb-3">
                   Compare: typical restaurant margin
                 </h3>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   The average restaurant runs on a{" "}
-                  <span className="font-bold text-foreground">3–9%</span> net
+                  <span className="font-bold text-primary">3–9%</span> net
                   profit margin. Uber's delivery margin is in the same ballpark
                   — razor-thin.
                 </p>
               </div>
-              <div className="bg-card rounded-xl p-6 border border-border">
-                <span className="text-3xl block mb-3">🚗</span>
-                <h3 className="font-semibold mb-2">Half goes to the driver</h3>
-                <p className="text-sm text-muted-foreground">
+              <div className="bg-gray-50 rounded-xl p-8">
+                <div className="w-9 h-9 flex items-center justify-center mb-5 text-muted-foreground">
+                  <Car size={20} strokeWidth={1.5} />
+                </div>
+                <h3 className="font-semibold mb-3">Half goes to the driver</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   The single biggest expense is paying the delivery partner. If
                   you hired your own driver, you'd be paying similar or more —
                   plus insurance, gas, and management overhead.
                 </p>
               </div>
-              <div className="bg-card rounded-xl p-6 border border-border">
-                <span className="text-3xl block mb-3">📱</span>
-                <h3 className="font-semibold mb-2">You get the tech for free</h3>
-                <p className="text-sm text-muted-foreground">
+              <div className="bg-gray-50 rounded-xl p-8">
+                <div className="w-9 h-9 flex items-center justify-center mb-5 text-muted-foreground">
+                  <Smartphone size={20} strokeWidth={1.5} />
+                </div>
+                <h3 className="font-semibold mb-3">You get the tech for free</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   Building your own ordering app, payment system, GPS tracking,
                   and customer support would cost{" "}
-                  <span className="font-bold text-foreground">
+                  <span className="font-bold text-primary">
                     $50K–$200K/year
                   </span>
                   . It's baked into the commission.
