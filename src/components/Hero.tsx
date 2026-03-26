@@ -526,7 +526,12 @@ const Hero = () => {
 
           {/* Left */}
           <div>
-
+            <motion.div {...fadeInUp} className="mb-6">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary text-sm font-medium text-muted-foreground">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                Uber Eats for Merchants
+              </span>
+            </motion.div>
 
             <motion.h1
               {...fadeInUp}
