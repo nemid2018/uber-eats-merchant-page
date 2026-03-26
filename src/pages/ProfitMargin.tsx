@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { fadeInUp } from "../lib/animations";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { Car, CreditCard, Shield, Smartphone, Megaphone, TrendingUp } from "lucide-react";
 
 const ProfitMargin = () => {
   const [orderValue, setOrderValue] = useState(20);
@@ -17,48 +18,41 @@ const ProfitMargin = () => {
   const commission = orderValue * 0.25;
 
   // Breakdown of where the commission goes (based on Uber's public financials)
-  // Delivery partner pay is the lion's share
   const breakdown = [
     {
       label: "Delivery partner pay",
       pct: 0.46,
-      color: "bg-primary",
-      emoji: "🚗",
+      Icon: Car,
       description: "The driver who picks up & delivers the food",
     },
     {
       label: "Payment processing",
       pct: 0.10,
-      color: "bg-blue-500",
-      emoji: "💳",
+      Icon: CreditCard,
       description: "Credit card fees, fraud protection, refunds",
     },
     {
       label: "Insurance & safety",
       pct: 0.06,
-      color: "bg-amber-500",
-      emoji: "🛡️",
+      Icon: Shield,
       description: "Driver insurance, accident coverage, background checks",
     },
     {
       label: "Technology & support",
       pct: 0.12,
-      color: "bg-violet-500",
-      emoji: "📱",
+      Icon: Smartphone,
       description: "The app, GPS routing, 24/7 customer support, order tracking",
     },
     {
       label: "Marketing & promos",
       pct: 0.10,
-      color: "bg-rose-500",
-      emoji: "📣",
+      Icon: Megaphone,
       description: "Bringing new customers to your restaurant",
     },
     {
       label: "Uber's actual profit",
       pct: 0.16,
-      color: "bg-emerald-500",
-      emoji: "💰",
+      Icon: TrendingUp,
       description: "What Uber actually keeps at the end of the day",
     },
   ];
@@ -86,18 +80,23 @@ const ProfitMargin = () => {
         {/* The simple breakdown */}
         <section className="px-6 md:px-12 lg:px-20 pb-16">
           <motion.div {...fadeInUp} className="max-w-3xl mx-auto">
-            <div className="mb-10">
-              <label className="text-sm font-medium text-muted-foreground block mb-3">
+
+            {/* Slider */}
+            <div className="mb-12">
+              <label className="text-sm font-medium text-muted-foreground block mb-4">
                 Adjust order value
               </label>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-6">
                 <input
                   type="range"
                   min={10}
                   max={50}
                   value={orderValue}
                   onChange={(e) => setOrderValue(Number(e.target.value))}
-                  className="flex-1 h-2 rounded-full appearance-none bg-border cursor-pointer accent-primary"
+                  className="flex-1 h-1 rounded-full appearance-none cursor-pointer"
+                  style={{
+                    background: `linear-gradient(to right, #06C167 0%, #06C167 ${((orderValue - 10) / 40) * 100}%, #e5e7eb ${((orderValue - 10) / 40) * 100}%, #e5e7eb 100%)`,
+                  }}
                 />
                 {isEditing ? (
                   <div className="flex items-center gap-2">
@@ -120,7 +119,7 @@ const ProfitMargin = () => {
                           setIsEditing(false);
                         }
                       }}
-                      className="text-2xl font-mono font-bold w-20 text-right bg-secondary border border-border rounded-lg px-2 py-1 outline-none focus:border-primary"
+                      className="text-2xl font-mono font-bold w-20 text-right bg-transparent border-b-2 border-primary outline-none"
                     />
                     <button
                       onMouseDown={(e) => e.preventDefault()}
@@ -129,7 +128,7 @@ const ProfitMargin = () => {
                         setOrderValue(val);
                         setIsEditing(false);
                       }}
-                      className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-colors active:scale-95"
+                      className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground hover:opacity-90 transition-colors active:scale-95 text-sm"
                       title="Confirm"
                     >
                       ✓
@@ -151,105 +150,98 @@ const ProfitMargin = () => {
             </div>
 
             {/* The big picture */}
-            <div className="bg-card rounded-2xl p-8 md:p-10 shadow-card border border-border mb-8">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-                <div>
-                  <span className="text-sm text-muted-foreground block mb-1">
-                    Customer pays
-                  </span>
-                  <span className="text-5xl font-mono font-bold">
-                    ${orderValue.toFixed(2)}
-                  </span>
+            <div className="mb-10">
+              {/* Two-tone bar */}
+              <div className="flex rounded-lg overflow-hidden h-10 mb-6">
+                <div
+                  className="bg-primary flex items-center justify-center text-sm font-bold text-white"
+                  style={{ width: "75%" }}
+                >
+                  You keep 75%
                 </div>
-                <div className="text-4xl hidden md:block">→</div>
-                <div>
-                  <span className="text-sm text-muted-foreground block mb-1">
-                    You keep (75%)
-                  </span>
-                  <span className="text-5xl font-mono font-bold text-primary">
-                    ${(orderValue - commission).toFixed(2)}
-                  </span>
-                </div>
-                <div className="text-4xl hidden md:block">|</div>
-                <div>
-                  <span className="text-sm text-muted-foreground block mb-1">
-                    Uber's cut (25%)
-                  </span>
-                  <span className="text-5xl font-mono font-bold text-muted-foreground">
-                    ${commission.toFixed(2)}
-                  </span>
+                <div
+                  className="bg-[#1a1a1a] flex items-center justify-center text-sm font-bold text-white"
+                  style={{ width: "25%" }}
+                >
+                  Uber 25%
                 </div>
               </div>
 
-              <p className="text-sm text-muted-foreground">
-                On the Plus plan (25% commission). But that ${commission.toFixed(2)} doesn't go into
-                Uber's pocket. Here's where it actually goes ↓
+              <div className="flex flex-col md:flex-row md:items-start gap-6">
+                <div className="flex-1">
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Customer pays</span>
+                  <span className="text-4xl font-mono font-bold">${orderValue.toFixed(2)}</span>
+                </div>
+                <div className="flex-1">
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">You keep</span>
+                  <span className="text-4xl font-mono font-bold text-primary">${(orderValue - commission).toFixed(2)}</span>
+                </div>
+                <div className="flex-1">
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider block mb-1">Uber's cut</span>
+                  <span className="text-4xl font-mono font-bold text-[#1a1a1a]">${commission.toFixed(2)}</span>
+                </div>
+              </div>
+
+              <p className="text-sm text-muted-foreground mt-4">
+                On the Plus plan (25% commission). But that ${commission.toFixed(2)} doesn't go into Uber's pocket ↓
               </p>
             </div>
 
             {/* The punchline */}
-            <div className="bg-primary/5 border-2 border-primary rounded-2xl p-8 md:p-10 text-center mb-10">
-              <p className="text-muted-foreground mb-2 text-sm font-medium">
+            <div className="border-l-4 border-primary pl-6 mb-12">
+              <p className="text-sm text-muted-foreground mb-1">
                 Out of a ${orderValue.toFixed(2)} order, Uber's actual profit is
               </p>
-              <span className="text-6xl md:text-7xl font-mono font-bold text-primary block mb-2">
-                ${uberProfit.toFixed(2)}
-              </span>
-              <p className="text-muted-foreground text-lg">
-                That's{" "}
-                <span className="font-bold text-foreground">
-                  {((uberProfit / orderValue) * 100).toFixed(1)}%
-                </span>{" "}
-                of the order value.
-              </p>
+              <div className="flex items-baseline gap-3">
+                <span className="text-5xl font-mono font-bold text-primary">
+                  ${uberProfit.toFixed(2)}
+                </span>
+                <span className="text-muted-foreground text-lg">
+                  ({((uberProfit / orderValue) * 100).toFixed(1)}% of order value)
+                </span>
+              </div>
             </div>
 
             {/* Where every dollar goes */}
-            <h2 className="text-2xl font-bold mb-6">
+            <h2 className="text-xl font-bold mb-2 text-foreground">
               Where your ${commission.toFixed(2)} actually goes
             </h2>
+            <p className="text-sm text-muted-foreground mb-8">Breakdown of Uber's 25% commission</p>
 
-            {/* Visual bar */}
-            <div className="flex rounded-xl overflow-hidden h-12 mb-8">
-              {breakdown.map((item) => (
-                <div
-                  key={item.label}
-                  className={`${item.color} relative group transition-all`}
-                  style={{ width: `${item.pct * 100}%` }}
-                  title={`${item.label}: $${(commission * item.pct).toFixed(2)}`}
-                >
-                  <span className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">
-                    {Math.round(item.pct * 100)}%
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Line items */}
-            <div className="space-y-4 mb-10">
-              {breakdown.map((item) => {
+            {/* Line items — borderless with dividers */}
+            <div className="mb-4">
+              {breakdown.map((item, i) => {
+                const { Icon } = item;
                 const amount = commission * item.pct;
+                const isLast = i === breakdown.length - 1;
                 return (
                   <div
                     key={item.label}
-                    className="flex items-start gap-4 bg-card rounded-xl p-5 border border-border"
+                    className={`flex items-center gap-4 py-5 ${!isLast ? "border-b border-border" : ""}`}
                   >
-                    <span className="text-2xl">{item.emoji}</span>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-semibold">{item.label}</span>
-                        <span className="font-mono font-bold text-lg">
-                          ${amount.toFixed(2)}
-                        </span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        {item.description}
-                      </p>
+                    <div className="w-8 h-8 flex items-center justify-center shrink-0 text-muted-foreground">
+                      <Icon size={18} strokeWidth={1.5} />
                     </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="font-medium text-foreground">{item.label}</span>
+                      <p className="text-sm text-muted-foreground mt-0.5">{item.description}</p>
+                    </div>
+                    <span className="font-mono font-bold text-base text-foreground shrink-0">
+                      ${amount.toFixed(2)}
+                    </span>
                   </div>
                 );
               })}
             </div>
+
+            {/* Summary line */}
+            <div className="flex items-center justify-between py-5 border-t-2 border-primary">
+              <span className="font-bold text-foreground">Your earnings</span>
+              <span className="font-mono font-bold text-xl text-primary">
+                ${(orderValue - commission).toFixed(2)}
+              </span>
+            </div>
+
           </motion.div>
         </section>
 
