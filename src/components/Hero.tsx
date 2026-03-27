@@ -442,10 +442,12 @@ const MerchantTablet = ({ cart, onAccept }: { cart: CartMap; onAccept: () => voi
       transition={{ duration: 0.45, ease: [0.2, 0, 0, 1], delay: 0.15 }}
     >
       <p className="text-[11px] text-gray-400 font-semibold mb-2 tracking-widest uppercase">Merchant tablet</p>
-      {/* Landscape tablet — slim phone-style bezel */}
-      <div className="relative bg-black shadow-2xl" style={{ width: 900, height: 580, borderRadius: 28 }}>
-        {/* Screen inset — 9px bezel all around */}
-        <div className="absolute bg-white overflow-hidden flex flex-col" style={{ top: 9, left: 9, right: 9, bottom: 9, borderRadius: 20 }}>
+      {/* Landscape tablet — matches phone bezel style */}
+      <div className="relative shadow-2xl" style={{ width: 900, height: 580 }}>
+        {/* Bezel layer — same pattern as phone */}
+        <div className="absolute inset-0 bg-black rounded-[2rem]" />
+        {/* Screen inset — 12px bezel, matching phone */}
+        <div className="absolute bg-white overflow-hidden flex flex-col" style={{ top: 12, left: 12, right: 12, bottom: 12, borderRadius: "1.5rem" }}>
           {/* Header */}
           <div className="px-10 py-6 flex items-center gap-4 bg-[#06C167] flex-shrink-0">
             {!accepted && (
