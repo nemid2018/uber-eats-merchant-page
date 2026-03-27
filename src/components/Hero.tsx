@@ -2,11 +2,116 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { fadeInUp } from "../lib/animations";
 
-// ─── Shared food data ────────────────────────────────────────────────────────
-const FOOD_ITEMS = [
-  { id: "ramen",    name: "Spicy Ramen Bowl",  sub: "Noodles · 20–30 min",  price: 14.99 },
-  { id: "gyoza",    name: "Gyoza (6 pcs)",      sub: "Japanese · 15–25 min", price: 9.50  },
-  { id: "lemonade", name: "Matcha Lemonade",    sub: "Drinks · 10 min",      price: 4.99  },
+// ─── All orderable items (every restaurant) ──────────────────────────────────
+const ALL_ITEMS = [
+  // Sakura Noodle House
+  { id: "sakura-ramen",   name: "Spicy Ramen Bowl",       sub: "Tonkotsu broth, chashu pork, soft egg",    price: 14.99 },
+  { id: "sakura-gyoza",   name: "Pan-Fried Gyoza (6)",    sub: "Pork & cabbage, ponzu dipping sauce",      price: 9.50  },
+  { id: "sakura-udon",    name: "Beef Udon",              sub: "Thick udon noodles, wagyu beef, mushrooms", price: 16.99 },
+  { id: "sakura-matcha",  name: "Matcha Lemonade",        sub: "House-made, lightly sweet",                price: 4.99  },
+  // Stacked
+  { id: "stack-classic",  name: "The Classic",            sub: "Smash patty, American cheese, pickles",    price: 12.99 },
+  { id: "stack-double",   name: "Double Stack",           sub: "Two smash patties, secret sauce, onion",   price: 16.99 },
+  { id: "stack-fries",    name: "Crispy Fries",           sub: "Sea salt, house seasoning",                price: 4.99  },
+  { id: "stack-shake",    name: "Vanilla Shake",          sub: "Thick-cut, house-made",                    price: 6.99  },
+  // Casa Fuego
+  { id: "fuego-tacos",    name: "Street Tacos (3)",       sub: "Carnitas, salsa verde, cilantro",          price: 13.99 },
+  { id: "fuego-burrito",  name: "Carne Asada Burrito",   sub: "Full-size, rice, beans, guac",             price: 14.99 },
+  { id: "fuego-queso",    name: "Queso Dip + Chips",     sub: "Warm house-made queso",                    price: 7.99  },
+  { id: "fuego-agua",     name: "Agua Fresca",            sub: "Hibiscus or tamarind, house-made",         price: 4.49  },
+  // Crust Theory
+  { id: "crust-marg",     name: "Margherita",             sub: "San Marzano tomato, fresh mozzarella",     price: 17.99 },
+  { id: "crust-pepp",     name: "Pepperoni",              sub: "Cup-and-char pepperoni, red sauce",        price: 19.99 },
+  { id: "crust-knots",    name: "Garlic Knots (6)",      sub: "Parmesan, herb butter",                    price: 6.99  },
+  { id: "crust-soda",     name: "Italian Soda",           sub: "Blood orange or lemon",                    price: 3.99  },
+  // The Green Bowl
+  { id: "green-acai",     name: "Açaí Power Bowl",       sub: "Granola, banana, honey drizzle",           price: 13.99 },
+  { id: "green-caesar",   name: "Kale Caesar",            sub: "House dressing, parmesan, croutons",       price: 12.99 },
+  { id: "green-wrap",     name: "Avocado Chicken Wrap",  sub: "Grilled chicken, avocado, greens",         price: 14.99 },
+  { id: "green-juice",    name: "Cold Press Juice",       sub: "Ginger, lemon, apple",                     price: 7.99  },
+  // Omakase Express
+  { id: "oma-dragon",     name: "Dragon Roll (8 pcs)",   sub: "Shrimp tempura, avocado, tobiko",          price: 18.99 },
+  { id: "oma-salmon",     name: "Salmon Nigiri (4 pcs)", sub: "Day-boat salmon, sushi rice",              price: 16.99 },
+  { id: "oma-edamame",    name: "Edamame",                sub: "Sea salt, sesame oil",                     price: 5.99  },
+  { id: "oma-miso",       name: "Miso Soup",              sub: "Tofu, wakame, green onion",                price: 4.49  },
+];
+
+// ─── Restaurant definitions ───────────────────────────────────────────────────
+const RESTAURANTS = [
+  {
+    id: "sakura", name: "Sakura Noodle House", cuisine: "Japanese",
+    rating: 4.8, reviews: "320+", time: "20–30 min", fee: "$0.99", minOrder: "$10",
+    badge: null as string | null,
+    gradient: "linear-gradient(135deg,#d4a373 0%,#8b5e3c 100%)", emoji: "🍜", headerColor: "#8b5e3c",
+    sections: [
+      { name: "Popular", itemIds: ["sakura-ramen","sakura-gyoza"] },
+      { name: "Mains",   itemIds: ["sakura-ramen","sakura-udon"] },
+      { name: "Sides",   itemIds: ["sakura-gyoza"] },
+      { name: "Drinks",  itemIds: ["sakura-matcha"] },
+    ],
+  },
+  {
+    id: "stacked", name: "Stacked", cuisine: "American Burgers",
+    rating: 4.6, reviews: "180+", time: "15–25 min", fee: "Free", minOrder: "$8",
+    badge: null as string | null,
+    gradient: "linear-gradient(135deg,#c0392b 0%,#6c1a1a 100%)", emoji: "🍔", headerColor: "#6c1a1a",
+    sections: [
+      { name: "Popular", itemIds: ["stack-classic","stack-double"] },
+      { name: "Burgers", itemIds: ["stack-classic","stack-double"] },
+      { name: "Sides",   itemIds: ["stack-fries"] },
+      { name: "Drinks",  itemIds: ["stack-shake"] },
+    ],
+  },
+  {
+    id: "fuego", name: "Casa Fuego", cuisine: "Mexican",
+    rating: 4.7, reviews: "540+", time: "25–35 min", fee: "$1.99", minOrder: "$12",
+    badge: "Promoted" as string | null,
+    gradient: "linear-gradient(135deg,#f39c12 0%,#e74c3c 100%)", emoji: "🌮", headerColor: "#c0392b",
+    sections: [
+      { name: "Popular", itemIds: ["fuego-tacos","fuego-burrito"] },
+      { name: "Mains",   itemIds: ["fuego-tacos","fuego-burrito"] },
+      { name: "Sides",   itemIds: ["fuego-queso"] },
+      { name: "Drinks",  itemIds: ["fuego-agua"] },
+    ],
+  },
+  {
+    id: "crust", name: "Crust Theory", cuisine: "Pizza",
+    rating: 4.5, reviews: "210+", time: "20–30 min", fee: "Free", minOrder: "$10",
+    badge: "New" as string | null,
+    gradient: "linear-gradient(135deg,#e74c3c 0%,#922b21 100%)", emoji: "🍕", headerColor: "#922b21",
+    sections: [
+      { name: "Popular", itemIds: ["crust-marg","crust-pepp"] },
+      { name: "Pizzas",  itemIds: ["crust-marg","crust-pepp"] },
+      { name: "Sides",   itemIds: ["crust-knots"] },
+      { name: "Drinks",  itemIds: ["crust-soda"] },
+    ],
+  },
+  {
+    id: "green", name: "The Green Bowl", cuisine: "Healthy · Salads",
+    rating: 4.9, reviews: "90+", time: "15–20 min", fee: "$0.99", minOrder: "$8",
+    badge: null as string | null,
+    gradient: "linear-gradient(135deg,#27ae60 0%,#1a6b3e 100%)", emoji: "🥗", headerColor: "#1a6b3e",
+    sections: [
+      { name: "Popular", itemIds: ["green-acai","green-caesar"] },
+      { name: "Bowls",   itemIds: ["green-acai"] },
+      { name: "Salads",  itemIds: ["green-caesar"] },
+      { name: "Mains",   itemIds: ["green-wrap"] },
+      { name: "Drinks",  itemIds: ["green-juice"] },
+    ],
+  },
+  {
+    id: "omakase", name: "Omakase Express", cuisine: "Sushi · Japanese",
+    rating: 4.8, reviews: "410+", time: "30–40 min", fee: "$2.49", minOrder: "$15",
+    badge: null as string | null,
+    gradient: "linear-gradient(135deg,#2980b9 0%,#1a3a6e 100%)", emoji: "🍣", headerColor: "#1a3a6e",
+    sections: [
+      { name: "Popular", itemIds: ["oma-dragon","oma-salmon"] },
+      { name: "Rolls",   itemIds: ["oma-dragon"] },
+      { name: "Nigiri",  itemIds: ["oma-salmon"] },
+      { name: "Sides",   itemIds: ["oma-edamame"] },
+      { name: "Soups",   itemIds: ["oma-miso"] },
+    ],
+  },
 ];
 
 // ─── Background teaser screens (static, no interactivity) ───────────────────
@@ -137,7 +242,7 @@ const BackArrow = ({ onBack, light = false }: { onBack: () => void; light?: bool
 
 // ─── Interactive app screens ─────────────────────────────────────────────────
 type CartMap   = Record<string, number>;
-type AppScreen = "home" | "cart" | "confirmed" | "tracking" | "contact" | "message";
+type AppScreen = "home" | "cart" | "confirmed" | "tracking" | "contact" | "message" | "restaurant";
 
 const DELIVERY_FEE = 2.99;
 
@@ -148,70 +253,140 @@ const appVariants = {
 };
 
 // Home
+const FILTERS = [
+  { label: "Free delivery", icon: "🛵" },
+  { label: "Top rated",     icon: "⭐" },
+  { label: "Under 30 min",  icon: "🕐" },
+  { label: "Noodles",       icon: "🍜" },
+  { label: "Sushi",         icon: "🍣" },
+  { label: "Burgers",       icon: "🍔" },
+  { label: "Mexican",       icon: "🌮" },
+];
+const CATEGORIES = [
+  { label: "Burgers", emoji: "🍔" }, { label: "Pizza",   emoji: "🍕" },
+  { label: "Sushi",   emoji: "🍣" }, { label: "Noodles", emoji: "🍜" },
+  { label: "Mexican", emoji: "🌮" }, { label: "Salads",  emoji: "🥗" },
+  { label: "Dessert", emoji: "🍰" },
+];
+
 const HomeScreen = ({
-  cart, add, go,
-}: { cart: CartMap; add: (id: string) => void; go: (s: AppScreen) => void }) => {
+  cart, go, openRestaurant,
+}: { cart: CartMap; add: (id: string) => void; go: (s: AppScreen) => void; openRestaurant: (id: string) => void }) => {
   const totalItems = Object.values(cart).reduce((a, b) => a + b, 0);
-  const subtotal   = FOOD_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
+  const subtotal   = ALL_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="px-5 pt-5 pb-3 flex items-center justify-between border-b border-gray-100 flex-shrink-0">
-        <div>
-          <p className="text-[11px] text-gray-400">Good evening 👋</p>
-          <p className="text-[15px] font-bold text-black">What are you craving?</p>
+    <div className="flex flex-col h-full bg-white">
+
+      {/* ── Fixed top header ── */}
+      <div className="flex-shrink-0 bg-white">
+        {/* Address + ETA */}
+        <div className="flex items-center justify-between px-4 pt-3 pb-1.5">
+          <button className="flex items-center gap-1">
+            <span className="text-[11px] font-bold text-black">📍 247 W 35th St</span>
+            <svg viewBox="0 0 24 24" className="w-3 h-3 flex-shrink-0" fill="none" stroke="black" strokeWidth="2.5" strokeLinecap="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <span className="text-[10px] text-gray-600 bg-gray-100 px-2 py-0.5 rounded-full font-medium">25–35 min</span>
         </div>
-        <button onClick={() => go("cart")} className="relative p-1" aria-label="Cart">
-          <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 01-8 0" />
-          </svg>
-          <AnimatePresence>
-            {totalItems > 0 && (
-              <motion.span
-                key="badge"
-                initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-[#06C167] text-white text-[9px] font-bold flex items-center justify-center"
-              >
-                {totalItems}
-              </motion.span>
-            )}
-          </AnimatePresence>
-        </button>
-      </div>
-
-      <div className="flex-1 overflow-auto px-5 py-4">
-        <p className="text-[9px] font-bold tracking-[0.12em] uppercase text-gray-400 mb-3">Popular near you</p>
-        {FOOD_ITEMS.map((item, i) => (
-          <div key={item.id} className={`flex items-center justify-between py-3 ${i < FOOD_ITEMS.length - 1 ? "border-b border-gray-100" : ""}`}>
-            <div className="min-w-0 pr-2">
-              <p className="text-[12px] font-semibold text-gray-900">{item.name}</p>
-              <p className="text-[10px] text-gray-400">{item.sub}</p>
-              <p className="text-[11px] font-bold text-black mt-0.5">${item.price.toFixed(2)}</p>
-            </div>
-            <div className="relative shrink-0">
-              <button
-                onClick={() => add(item.id)}
-                className="w-7 h-7 rounded-full bg-black flex items-center justify-center active:scale-90 transition-transform"
-              >
-                <span className="text-white text-sm font-bold leading-none">+</span>
-              </button>
-              <AnimatePresence>
-                {(cart[item.id] || 0) > 0 && (
-                  <motion.span
-                    key="qty"
-                    initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
-                    className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#06C167] text-white text-[9px] font-bold flex items-center justify-center"
-                  >
-                    {cart[item.id]}
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </div>
+        {/* Search */}
+        <div className="px-4 pb-1.5">
+          <div className="flex items-center gap-2 bg-gray-100 rounded-xl px-3 py-2">
+            <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <span className="text-[11px] text-gray-400">Search Uber Eats</span>
           </div>
-        ))}
+        </div>
+        {/* Filter chips */}
+        <div className="flex gap-2 px-4 pb-2 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+          {FILTERS.map((f) => (
+            <button
+              key={f.label}
+              onClick={() => setActiveFilter(activeFilter === f.label ? null : f.label)}
+              className={`flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-full border text-[10px] font-semibold transition-colors ${
+                activeFilter === f.label ? "bg-black text-white border-black" : "bg-white text-gray-700 border-gray-200"
+              }`}
+            >
+              <span>{f.icon}</span><span>{f.label}</span>
+            </button>
+          ))}
+        </div>
+        <div className="h-px bg-gray-100" />
       </div>
 
-      {/* Persistent "Go to cart" bar */}
+      {/* ── Scrollable content ── */}
+      <div className="flex-1 overflow-auto">
+        {/* Promo banner */}
+        <div className="mx-4 mt-3 mb-3 rounded-2xl overflow-hidden" style={{ background: "linear-gradient(135deg,#06C167 0%,#047a42 100%)" }}>
+          <div className="flex items-center justify-between px-4 py-3">
+            <div>
+              <p className="text-white text-[11px] font-black leading-snug">Free delivery on<br />your first order 🎉</p>
+              <p className="text-white/70 text-[9px] mt-0.5">Use code FIRST at checkout</p>
+            </div>
+            <span className="text-3xl">🛵</span>
+          </div>
+        </div>
+
+        {/* Category icons */}
+        <div className="px-4 mb-3">
+          <p className="text-[11px] font-bold text-black mb-2">Categories</p>
+          <div className="flex gap-3 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+            {CATEGORIES.map((c) => (
+              <div key={c.label} className="flex flex-col items-center gap-1 flex-shrink-0">
+                <div className="w-11 h-11 rounded-full bg-gray-100 flex items-center justify-center">
+                  <span className="text-xl">{c.emoji}</span>
+                </div>
+                <span className="text-[9px] text-gray-600 font-medium">{c.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Restaurant list */}
+        <div className="px-4 pb-3">
+          <p className="text-[11px] font-bold text-black mb-2">Featured restaurants</p>
+          <div className="flex flex-col gap-3">
+            {RESTAURANTS.map((r) => (
+              <button
+                key={r.id}
+                onClick={() => openRestaurant(r.id)}
+                className="text-left rounded-2xl overflow-hidden border border-gray-100 active:scale-[0.98] transition-transform w-full shadow-sm"
+              >
+                {/* Banner */}
+                <div className="h-[70px] w-full flex items-center justify-center relative" style={{ background: r.gradient }}>
+                  <span className="text-4xl">{r.emoji}</span>
+                  {r.badge && (
+                    <span className={`absolute top-2 left-2 text-[9px] font-bold px-2 py-0.5 rounded-sm text-white ${r.badge === "Promoted" ? "bg-black/40" : "bg-[#06C167]"}`}>
+                      {r.badge}
+                    </span>
+                  )}
+                </div>
+                {/* Info */}
+                <div className="px-3 py-2 bg-white">
+                  <div className="flex items-center justify-between mb-0.5">
+                    <p className="text-[12px] font-bold text-black">{r.name}</p>
+                    <div className="flex items-center gap-0.5">
+                      <svg viewBox="0 0 12 12" className="w-2.5 h-2.5" fill="#f59e0b"><path d="M6 1l1.4 3h3.1l-2.5 1.8.9 3L6 7.3 3.1 8.8l.9-3L1.5 4H4.6z"/></svg>
+                      <span className="text-[10px] font-semibold text-black">{r.rating}</span>
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-gray-500">{r.cuisine}</p>
+                  <div className="flex items-center gap-1 mt-0.5 flex-wrap">
+                    <span className="text-[10px] text-gray-400">({r.reviews})</span>
+                    <span className="text-[9px] text-gray-300">·</span>
+                    <span className="text-[10px] text-gray-500">{r.time}</span>
+                    <span className="text-[9px] text-gray-300">·</span>
+                    <span className={`text-[10px] font-medium ${r.fee === "Free" ? "text-[#06C167]" : "text-gray-500"}`}>
+                      {r.fee === "Free" ? "Free delivery" : `${r.fee} delivery`}
+                    </span>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Go to cart bar ── */}
       <AnimatePresence>
         {totalItems > 0 && (
           <motion.div
@@ -220,28 +395,39 @@ const HomeScreen = ({
             animate={{ y: 0,  opacity: 1 }}
             exit={{   y: 60, opacity: 0 }}
             transition={{ type: "spring", damping: 22, stiffness: 320 }}
-            className="px-4 pb-4 pt-2 flex-shrink-0"
+            className="px-4 pb-2 pt-1.5 flex-shrink-0"
           >
             <button
               onClick={() => go("cart")}
               className="w-full bg-[#06C167] rounded-full flex items-center px-3 py-2.5 active:scale-[0.98] transition-transform"
             >
-              {/* Item count badge */}
-              <span className="w-6 h-6 rounded-md bg-black/20 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">
-                {totalItems}
-              </span>
-              {/* Label */}
-              <span className="flex-1 text-center text-white text-[12px] font-bold tracking-wide">
-                Go to cart
-              </span>
-              {/* Price */}
-              <span className="text-white text-[11px] font-bold flex-shrink-0">
-                ${subtotal.toFixed(2)}
-              </span>
+              <span className="w-6 h-6 rounded-md bg-black/20 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">{totalItems}</span>
+              <span className="flex-1 text-center text-white text-[12px] font-bold tracking-wide">Go to cart</span>
+              <span className="text-white text-[11px] font-bold flex-shrink-0">${subtotal.toFixed(2)}</span>
             </button>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Bottom nav ── */}
+      <div className="flex-shrink-0 border-t border-gray-100 bg-white">
+        <div className="flex">
+          {([
+            { label: "Home",    active: true,  icon: <><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></> },
+            { label: "Search",  active: false, icon: <><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></> },
+            { label: "Orders",  active: false, icon: <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/> },
+            { label: "Account", active: false, icon: <><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></> },
+          ] as const).map(({ label, active, icon }) => (
+            <button key={label} className="flex-1 flex flex-col items-center py-2 gap-0.5">
+              <svg viewBox="0 0 24 24" className={`w-5 h-5 ${active ? "stroke-[#06C167]" : "stroke-gray-400"}`} fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                {icon}
+              </svg>
+              <span className={`text-[9px] font-medium ${active ? "text-[#06C167]" : "text-gray-400"}`}>{label}</span>
+              {active && <div className="w-4 h-0.5 bg-[#06C167] rounded-full" />}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
@@ -250,9 +436,9 @@ const HomeScreen = ({
 const CartScreen = ({
   cart, add, remove, go,
 }: { cart: CartMap; add: (id: string) => void; remove: (id: string) => void; go: (s: AppScreen) => void }) => {
-  const cartItems  = FOOD_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
+  const cartItems  = ALL_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
   const totalItems = Object.values(cart).reduce((a, b) => a + b, 0);
-  const subtotal   = FOOD_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
+  const subtotal   = ALL_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
 
   return (
     <div className="flex flex-col h-full">
@@ -305,8 +491,8 @@ const CartScreen = ({
 const ConfirmedScreen = ({
   cart, go,
 }: { cart: CartMap; go: (s: AppScreen) => void }) => {
-  const cartItems = FOOD_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
-  const subtotal  = FOOD_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
+  const cartItems = ALL_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
+  const subtotal  = ALL_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
 
   return (
     <div className="flex flex-col h-full">
@@ -701,10 +887,129 @@ const MessageScreen = ({ go }: { go: (s: AppScreen) => void }) => {
   );
 };
 
+// ─── Restaurant menu screen ───────────────────────────────────────────────────
+const RestaurantScreen = ({
+  restaurantId, cart, add, go,
+}: { restaurantId: string; cart: CartMap; add: (id: string) => void; go: (s: AppScreen) => void }) => {
+  const restaurant = RESTAURANTS.find((r) => r.id === restaurantId);
+  if (!restaurant) return null;
+
+  const totalItems = Object.values(cart).reduce((a, b) => a + b, 0);
+  const subtotal   = ALL_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
+
+  return (
+    <div className="flex flex-col h-full bg-white">
+
+      {/* Banner header */}
+      <div className="flex-shrink-0 relative" style={{ height: 90, background: restaurant.gradient }}>
+        <button
+          onClick={() => go("home")}
+          className="absolute top-3 left-3 w-7 h-7 rounded-full bg-black/30 flex items-center justify-center"
+        >
+          <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M19 12H5M12 5l-7 7 7 7" />
+          </svg>
+        </button>
+        <div className="flex items-center justify-center h-full">
+          <span className="text-5xl">{restaurant.emoji}</span>
+        </div>
+      </div>
+
+      {/* Info row */}
+      <div className="px-4 py-3 border-b border-gray-100 flex-shrink-0">
+        <p className="text-[14px] font-black text-black leading-tight">{restaurant.name}</p>
+        <div className="flex items-center gap-1 mt-0.5 flex-wrap">
+          <svg viewBox="0 0 12 12" className="w-3 h-3 flex-shrink-0" fill="#f59e0b"><path d="M6 1l1.4 3h3.1l-2.5 1.8.9 3L6 7.3 3.1 8.8l.9-3L1.5 4H4.6z"/></svg>
+          <span className="text-[11px] font-semibold">{restaurant.rating}</span>
+          <span className="text-[10px] text-gray-400">({restaurant.reviews})</span>
+          <span className="text-[9px] text-gray-300">·</span>
+          <span className="text-[10px] text-gray-500">{restaurant.cuisine}</span>
+        </div>
+        <div className="flex items-center gap-3 mt-1.5">
+          {[
+            { icon: "🕐", label: restaurant.time },
+            { icon: "🛵", label: `${restaurant.fee === "Free" ? "Free" : restaurant.fee} delivery` },
+            { icon: "💰", label: `${restaurant.minOrder} min.` },
+          ].map(({ icon, label }) => (
+            <div key={label} className="flex items-center gap-0.5">
+              <span className="text-[9px]">{icon}</span>
+              <span className="text-[10px] text-gray-500">{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Menu sections */}
+      <div className="flex-1 overflow-auto pb-2">
+        {restaurant.sections.map((section) => {
+          const items = section.itemIds.flatMap((id) => ALL_ITEMS.filter((i) => i.id === id));
+          return (
+            <div key={section.name}>
+              <p className="px-4 pt-4 pb-2 text-[11px] font-black text-black uppercase tracking-wider">{section.name}</p>
+              {items.map((item) => (
+                <div key={item.id} className="flex items-start gap-3 px-4 py-2.5 border-b border-gray-50">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[12px] font-semibold text-gray-900">{item.name}</p>
+                    <p className="text-[10px] text-gray-400 leading-snug mt-0.5">{item.sub}</p>
+                    <p className="text-[11px] font-bold text-black mt-1">${item.price.toFixed(2)}</p>
+                  </div>
+                  <div className="relative flex-shrink-0 mt-0.5">
+                    <button
+                      onClick={() => add(item.id)}
+                      className="w-7 h-7 rounded-full bg-black flex items-center justify-center active:scale-90 transition-transform"
+                    >
+                      <span className="text-white text-sm font-bold leading-none">+</span>
+                    </button>
+                    <AnimatePresence>
+                      {(cart[item.id] || 0) > 0 && (
+                        <motion.span
+                          key="qty"
+                          initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
+                          className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#06C167] text-white text-[9px] font-bold flex items-center justify-center"
+                        >
+                          {cart[item.id]}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Go to cart bar */}
+      <AnimatePresence>
+        {totalItems > 0 && (
+          <motion.div
+            key="cart-bar"
+            initial={{ y: 60, opacity: 0 }}
+            animate={{ y: 0,  opacity: 1 }}
+            exit={{   y: 60, opacity: 0 }}
+            transition={{ type: "spring", damping: 22, stiffness: 320 }}
+            className="px-4 pb-4 pt-2 flex-shrink-0"
+          >
+            <button
+              onClick={() => go("cart")}
+              className="w-full bg-[#06C167] rounded-full flex items-center px-3 py-2.5 active:scale-[0.98] transition-transform"
+            >
+              <span className="w-6 h-6 rounded-md bg-black/20 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">{totalItems}</span>
+              <span className="flex-1 text-center text-white text-[12px] font-bold tracking-wide">Go to cart</span>
+              <span className="text-white text-[11px] font-bold flex-shrink-0">${subtotal.toFixed(2)}</span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 // ─── Interactive app shell ───────────────────────────────────────────────────
 const InteractiveApp = ({ onOrderConfirmed }: { onOrderConfirmed?: (cart: CartMap) => void }) => {
-  const [screen, setScreen] = useState<AppScreen>("home");
-  const [cart,   setCart  ] = useState<CartMap>({});
+  const [screen,            setScreen           ] = useState<AppScreen>("home");
+  const [cart,              setCart             ] = useState<CartMap>({});
+  const [activeRestaurant,  setActiveRestaurant ] = useState<string | null>(null);
 
   const add = (id: string) =>
     setCart((p) => ({ ...p, [id]: (p[id] || 0) + 1 }));
@@ -722,6 +1027,11 @@ const InteractiveApp = ({ onOrderConfirmed }: { onOrderConfirmed?: (cart: CartMa
     setScreen(s);
   };
 
+  const openRestaurant = (id: string) => {
+    setActiveRestaurant(id);
+    setScreen("restaurant");
+  };
+
   return (
     <div className="h-full relative overflow-hidden">
       <AnimatePresence mode="wait">
@@ -734,12 +1044,13 @@ const InteractiveApp = ({ onOrderConfirmed }: { onOrderConfirmed?: (cart: CartMa
           transition={{ duration: 0.22, ease: [0.2, 0, 0, 1] }}
           className="absolute inset-0"
         >
-          {screen === "home"      && <HomeScreen           cart={cart} add={add}                 go={go} />}
-          {screen === "cart"      && <CartScreen           cart={cart} add={add} remove={remove} go={go} />}
-          {screen === "confirmed" && <ConfirmedScreen      cart={cart}                            go={go} />}
-          {screen === "tracking"  && <TrackingScreen                                               go={go} />}
-          {screen === "contact"   && <ContactDriverScreen                                          go={go} />}
-          {screen === "message"   && <MessageScreen                                                go={go} />}
+          {screen === "home"       && <HomeScreen         cart={cart} add={add}                 go={go} openRestaurant={openRestaurant} />}
+          {screen === "restaurant" && activeRestaurant    && <RestaurantScreen restaurantId={activeRestaurant} cart={cart} add={add} go={go} />}
+          {screen === "cart"       && <CartScreen         cart={cart} add={add} remove={remove} go={go} />}
+          {screen === "confirmed"  && <ConfirmedScreen    cart={cart}                            go={go} />}
+          {screen === "tracking"   && <TrackingScreen                                             go={go} />}
+          {screen === "contact"    && <ContactDriverScreen                                        go={go} />}
+          {screen === "message"    && <MessageScreen                                              go={go} />}
         </motion.div>
       </AnimatePresence>
     </div>
@@ -749,8 +1060,8 @@ const InteractiveApp = ({ onOrderConfirmed }: { onOrderConfirmed?: (cart: CartMa
 // ─── Merchant Tablet ─────────────────────────────────────────────────────────
 const MerchantTablet = ({ cart, onAccept }: { cart: CartMap; onAccept: () => void }) => {
   const [accepted, setAccepted] = useState(false);
-  const cartItems = FOOD_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
-  const subtotal  = FOOD_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
+  const cartItems = ALL_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
+  const subtotal  = ALL_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
 
   const handleAccept = () => {
     setAccepted(true);
@@ -845,8 +1156,8 @@ const MerchantTablet = ({ cart, onAccept }: { cart: CartMap; onAccept: () => voi
 
 // ─── Receipt Printer ─────────────────────────────────────────────────────────
 const ReceiptPrinter = ({ printing, cart }: { printing: boolean; cart: CartMap }) => {
-  const cartItems = FOOD_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
-  const subtotal  = FOOD_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
+  const cartItems = ALL_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
+  const subtotal  = ALL_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
 
   return (
     <motion.div
