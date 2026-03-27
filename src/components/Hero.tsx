@@ -442,10 +442,10 @@ const MerchantTablet = ({ cart, onAccept }: { cart: CartMap; onAccept: () => voi
       transition={{ duration: 0.45, ease: [0.2, 0, 0, 1], delay: 0.15 }}
     >
       <p className="text-[11px] text-gray-400 font-semibold mb-2 tracking-widest uppercase">Merchant tablet</p>
-      {/* Portrait tablet — dark bezel */}
-      <div className="relative bg-[#1a1a1a] rounded-[2rem] p-3 shadow-2xl" style={{ width: 400, height: 580 }}>
-        {/* Home bar at bottom center */}
-        <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-[#333] rounded-full" />
+      {/* Landscape tablet — dark bezel */}
+      <div className="relative bg-[#1a1a1a] rounded-[2rem] p-3 shadow-2xl" style={{ width: 580, height: 400 }}>
+        {/* Home bar on right side */}
+        <div className="absolute right-1.5 top-1/2 -translate-y-1/2 w-1.5 h-14 bg-[#333] rounded-full" />
         <div className="bg-white rounded-[1.5rem] overflow-hidden flex flex-col" style={{ height: "100%" }}>
           {/* Header */}
           <div className="px-6 py-4 flex items-center gap-3 bg-[#06C167] flex-shrink-0">
@@ -466,48 +466,49 @@ const MerchantTablet = ({ cart, onAccept }: { cart: CartMap; onAccept: () => voi
             </p>
           </div>
 
-          {/* Order items */}
-          <div className="px-6 py-5 flex-1">
-            {cartItems.map((item) => (
-              <div key={item.id} className="flex justify-between items-center py-2.5 border-b border-gray-50 last:border-0">
-                <span className="text-[14px] text-gray-600">{cart[item.id]}× {item.name}</span>
-                <span className="text-[14px] font-semibold text-gray-900">${(item.price * cart[item.id]).toFixed(2)}</span>
+          {/* Order items + actions side by side */}
+          <div className="flex flex-1 overflow-hidden">
+            {/* Order list */}
+            <div className="flex-1 px-6 py-5 border-r border-gray-100 overflow-auto">
+              {cartItems.map((item) => (
+                <div key={item.id} className="flex justify-between items-center py-2.5 border-b border-gray-50 last:border-0">
+                  <span className="text-[14px] text-gray-600">{cart[item.id]}× {item.name}</span>
+                  <span className="text-[14px] font-semibold text-gray-900">${(item.price * cart[item.id]).toFixed(2)}</span>
+                </div>
+              ))}
+              <div className="flex justify-between text-[15px] font-bold pt-3 mt-2 border-t border-gray-100">
+                <span>Total</span>
+                <span>${(subtotal + DELIVERY_FEE).toFixed(2)}</span>
               </div>
-            ))}
-            <div className="flex justify-between text-[15px] font-bold pt-3 mt-2 border-t border-gray-100">
-              <span>Total</span>
-              <span>${(subtotal + DELIVERY_FEE).toFixed(2)}</span>
+            </div>
+
+            {/* Action panel */}
+            <div className="flex flex-col items-center justify-center px-6 gap-3" style={{ width: 180 }}>
+              <AnimatePresence>
+                {!accepted && (
+                  <motion.div
+                    initial={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="flex flex-col gap-3 w-full"
+                  >
+                    <button
+                      onClick={handleAccept}
+                      className="w-full bg-[#06C167] text-white text-[14px] font-bold py-3.5 rounded-xl active:scale-95 transition-transform hover:opacity-90"
+                    >
+                      Accept
+                    </button>
+                    <button className="w-full border border-gray-200 text-gray-500 text-[14px] font-bold py-3.5 rounded-xl active:scale-95 transition-transform hover:bg-gray-50">
+                      Decline
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              {accepted && (
+                <p className="text-[12px] text-gray-400 text-center">Notified kitchen — est. prep 15 min</p>
+              )}
             </div>
           </div>
-
-          {/* Action buttons */}
-          <AnimatePresence>
-            {!accepted && (
-              <motion.div
-                initial={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0, overflow: "hidden" }}
-                transition={{ duration: 0.25 }}
-                className="flex gap-3 px-6 pb-6 flex-shrink-0"
-              >
-                <button
-                  onClick={handleAccept}
-                  className="flex-1 bg-[#06C167] text-white text-[14px] font-bold py-3.5 rounded-xl active:scale-95 transition-transform hover:opacity-90"
-                >
-                  Accept
-                </button>
-                <button className="flex-1 border border-gray-200 text-gray-500 text-[14px] font-bold py-3.5 rounded-xl active:scale-95 transition-transform hover:bg-gray-50">
-                  Decline
-                </button>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Accepted state footer */}
-          {accepted && (
-            <div className="px-6 pb-6 pt-2 flex-shrink-0">
-              <p className="text-[12px] text-gray-400">Notified kitchen — estimated prep time 15 min</p>
-            </div>
-          )}
         </div>
       </div>
     </motion.div>
