@@ -136,8 +136,8 @@ const BackArrow = ({ onBack }: { onBack: () => void }) => (
 );
 
 // ─── Interactive app screens ─────────────────────────────────────────────────
-type CartMap    = Record<string, number>;
-type AppScreen  = "home" | "cart" | "confirmed" | "tracking";
+type CartMap   = Record<string, number>;
+type AppScreen = "home" | "cart" | "confirmed" | "tracking";
 
 const DELIVERY_FEE = 2.99;
 
@@ -216,9 +216,9 @@ const HomeScreen = ({
 const CartScreen = ({
   cart, add, remove, go,
 }: { cart: CartMap; add: (id: string) => void; remove: (id: string) => void; go: (s: AppScreen) => void }) => {
-  const cartItems   = FOOD_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
-  const totalItems  = Object.values(cart).reduce((a, b) => a + b, 0);
-  const subtotal    = FOOD_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
+  const cartItems  = FOOD_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
+  const totalItems = Object.values(cart).reduce((a, b) => a + b, 0);
+  const subtotal   = FOOD_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
 
   return (
     <div className="flex flex-col h-full">
@@ -382,7 +382,7 @@ const TrackingScreen = ({ go }: { go: (s: AppScreen) => void }) => {
 };
 
 // ─── Interactive app shell ───────────────────────────────────────────────────
-const InteractiveApp = () => {
+const InteractiveApp = ({ onOrderConfirmed }: { onOrderConfirmed?: (cart: CartMap) => void }) => {
   const [screen, setScreen] = useState<AppScreen>("home");
   const [cart,   setCart  ] = useState<CartMap>({});
 
@@ -397,6 +397,11 @@ const InteractiveApp = () => {
       return n;
     });
 
+  const go = (s: AppScreen) => {
+    if (s === "confirmed") onOrderConfirmed?.(cart);
+    setScreen(s);
+  };
+
   return (
     <div className="h-full relative overflow-hidden">
       <AnimatePresence mode="wait">
@@ -409,13 +414,179 @@ const InteractiveApp = () => {
           transition={{ duration: 0.22, ease: [0.2, 0, 0, 1] }}
           className="absolute inset-0"
         >
-          {screen === "home"      && <HomeScreen      cart={cart} add={add}             go={setScreen} />}
-          {screen === "cart"      && <CartScreen      cart={cart} add={add} remove={remove} go={setScreen} />}
-          {screen === "confirmed" && <ConfirmedScreen cart={cart}                        go={setScreen} />}
-          {screen === "tracking"  && <TrackingScreen                                     go={setScreen} />}
+          {screen === "home"      && <HomeScreen      cart={cart} add={add}                   go={go} />}
+          {screen === "cart"      && <CartScreen      cart={cart} add={add} remove={remove}   go={go} />}
+          {screen === "confirmed" && <ConfirmedScreen cart={cart}                              go={go} />}
+          {screen === "tracking"  && <TrackingScreen                                           go={go} />}
         </motion.div>
       </AnimatePresence>
     </div>
+  );
+};
+
+// ─── Merchant Tablet ─────────────────────────────────────────────────────────
+const MerchantTablet = ({ cart, onAccept }: { cart: CartMap; onAccept: () => void }) => {
+  const [accepted, setAccepted] = useState(false);
+  const cartItems = FOOD_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
+  const subtotal  = FOOD_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
+
+  const handleAccept = () => {
+    setAccepted(true);
+    onAccept();
+  };
+
+  return (
+    <motion.div
+      initial={{ x: 80, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.45, ease: [0.2, 0, 0, 1], delay: 0.15 }}
+    >
+      <p className="text-[10px] text-gray-400 font-semibold mb-2 tracking-widest uppercase">Merchant tablet</p>
+      {/* Landscape tablet — dark bezel */}
+      <div className="bg-[#1a1a1a] rounded-2xl p-2.5 shadow-2xl" style={{ width: 360 }}>
+        {/* Home bar on right side (landscape detail) */}
+        <div className="absolute right-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#333] rounded-full" />
+        <div className="bg-white rounded-xl overflow-hidden">
+          {/* Header */}
+          <div className={`px-4 py-3 flex items-center gap-2 transition-colors duration-500 ${accepted ? "bg-[#06C167]" : "bg-[#06C167]"}`}>
+            {!accepted && (
+              <motion.span
+                className="w-2 h-2 rounded-full bg-white shrink-0"
+                animate={{ opacity: [1, 0.25, 1] }}
+                transition={{ repeat: Infinity, duration: 0.75, ease: "easeInOut" }}
+              />
+            )}
+            {accepted && (
+              <svg viewBox="0 0 10 8" className="w-3 h-3 shrink-0" fill="none">
+                <path d="M1 4l3 3 5-6" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
+            <p className="text-white font-black text-[13px] tracking-widest uppercase">
+              {accepted ? "ORDER ACCEPTED — Preparing" : "NEW ORDER"}
+            </p>
+          </div>
+
+          {/* Order items */}
+          <div className="px-4 py-3">
+            {cartItems.map((item) => (
+              <div key={item.id} className="flex justify-between items-center py-1.5 border-b border-gray-50 last:border-0">
+                <span className="text-[11px] text-gray-600">{cart[item.id]}× {item.name}</span>
+                <span className="text-[11px] font-semibold text-gray-900">${(item.price * cart[item.id]).toFixed(2)}</span>
+              </div>
+            ))}
+            <div className="flex justify-between text-[12px] font-bold pt-2 mt-1 border-t border-gray-100">
+              <span>Total</span>
+              <span>${(subtotal + DELIVERY_FEE).toFixed(2)}</span>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <AnimatePresence>
+            {!accepted && (
+              <motion.div
+                initial={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0, overflow: "hidden" }}
+                transition={{ duration: 0.25 }}
+                className="flex gap-2 px-4 pb-4"
+              >
+                <button
+                  onClick={handleAccept}
+                  className="flex-1 bg-[#06C167] text-white text-[11px] font-bold py-2.5 rounded-lg active:scale-95 transition-transform hover:opacity-90"
+                >
+                  Accept
+                </button>
+                <button className="flex-1 border border-gray-200 text-gray-500 text-[11px] font-bold py-2.5 rounded-lg active:scale-95 transition-transform hover:bg-gray-50">
+                  Decline
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Accepted state footer */}
+          {accepted && (
+            <div className="px-4 pb-4 pt-1">
+              <p className="text-[10px] text-gray-400">Notified kitchen — estimated prep time 15 min</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+// ─── Receipt Printer ─────────────────────────────────────────────────────────
+const ReceiptPrinter = ({ printing, cart }: { printing: boolean; cart: CartMap }) => {
+  const cartItems = FOOD_ITEMS.filter((i) => (cart[i.id] || 0) > 0);
+  const subtotal  = FOOD_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
+
+  return (
+    <motion.div
+      initial={{ x: 80, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      transition={{ duration: 0.45, ease: [0.2, 0, 0, 1], delay: 0.3 }}
+    >
+      <p className="text-[10px] text-gray-400 font-semibold mb-2 tracking-widest uppercase">Receipt printer</p>
+      <div className="flex items-end gap-4">
+        {/* Printer body */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-md flex flex-col items-center pt-2.5 pb-4 px-5" style={{ width: 160 }}>
+          {/* Paper slot */}
+          <div className="bg-gray-100 border border-gray-200 rounded-sm mb-3" style={{ width: 90, height: 4 }} />
+          {/* Status light */}
+          <div className="flex items-center gap-2">
+            <motion.div
+              className="w-2 h-2 rounded-full"
+              animate={{
+                backgroundColor: printing ? "#06C167" : "#d1d5db",
+              }}
+              transition={{ duration: 0.5 }}
+              style={printing ? { boxShadow: "0 0 0 3px #06c16722" } : {}}
+            />
+            {printing && (
+              <motion.div
+                className="w-2 h-2 rounded-full bg-[#06C167]"
+                animate={{ opacity: [1, 0.2, 1] }}
+                transition={{ repeat: Infinity, duration: 0.6 }}
+              />
+            )}
+            <span className="text-[8px] font-bold tracking-[0.2em] text-gray-300 ml-1">PRINT</span>
+          </div>
+        </div>
+
+        {/* Paper emerging from slot */}
+        <div className="flex flex-col items-center" style={{ width: 90 }}>
+          {/* Paper strip — grows downward from above the printer */}
+          <div className="overflow-hidden w-full flex justify-center" style={{ width: 90 }}>
+            <motion.div
+              initial={{ height: 0 }}
+              animate={{ height: printing ? 140 : 0 }}
+              transition={{ duration: 2.2, ease: "easeOut", delay: printing ? 0.6 : 0 }}
+              className="bg-white border-l border-r border-b border-gray-200 overflow-hidden w-full"
+              style={{ width: 90 }}
+            >
+              <div className="px-2.5 pt-2.5 pb-2 font-mono">
+                <p className="text-center font-black text-[9px] mb-0.5 tracking-widest">UBER EATS</p>
+                <p className="text-center text-gray-400 text-[7px] mb-1.5">Order Receipt</p>
+                <div className="border-t border-dashed border-gray-300 mb-1.5" />
+                {cartItems.map((item) => (
+                  <div key={item.id} className="flex justify-between text-[7px] text-gray-700 leading-5">
+                    <span>{cart[item.id]}x {item.name.length > 10 ? item.name.slice(0, 10) + "…" : item.name}</span>
+                    <span>${(item.price * cart[item.id]).toFixed(2)}</span>
+                  </div>
+                ))}
+                <div className="border-t border-dashed border-gray-300 mt-1.5 mb-1.5" />
+                <div className="flex justify-between font-bold text-[8px]">
+                  <span>TOTAL</span>
+                  <span>${(subtotal + DELIVERY_FEE).toFixed(2)}</span>
+                </div>
+                <p className="text-center text-[6px] text-gray-300 mt-2">Thank you!</p>
+              </div>
+            </motion.div>
+          </div>
+          {/* Slot indicator line above printer */}
+          <div className="bg-gray-200 rounded-sm" style={{ width: 90, height: 3 }} />
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
@@ -471,48 +642,72 @@ const PhoneMockup = ({ onClick }: { onClick: () => void }) => {
 };
 
 // ─── Fullscreen interactive overlay ─────────────────────────────────────────
-const PhoneOverlay = ({ onClose }: { onClose: () => void }) => (
-  <motion.div
-    className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center"
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    exit={{ opacity: 0 }}
-    transition={{ duration: 0.2 }}
-    onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-  >
-    {/* Large interactive phone */}
+const PhoneOverlay = ({ onClose }: { onClose: () => void }) => {
+  const [confirmedCart, setConfirmedCart] = useState<CartMap | null>(null);
+  const [orderAccepted, setOrderAccepted] = useState(false);
+
+  return (
     <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1,   opacity: 1 }}
-      exit={  { scale: 0.8, opacity: 0 }}
-      transition={{ type: "spring", damping: 22, stiffness: 300 }}
-      className="relative"
-      style={{ width: 320, height: 640 }}
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-8 overflow-auto"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      {/* Close button — anchored to top-right of phone frame */}
-      <button
-        onClick={onClose}
-        className="absolute -top-3 -right-3 z-10 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100 transition-colors"
-        aria-label="Close"
-      >
-        <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="#111" strokeWidth="2.5" strokeLinecap="round">
-          <path d="M18 6L6 18M6 6l12 12" />
-        </svg>
-      </button>
-      <div className="absolute inset-0 rounded-[3rem] bg-black" />
-      <div className="absolute bg-white flex flex-col overflow-hidden" style={{ top: 12, left: 12, right: 12, bottom: 12, borderRadius: "2.6rem" }}>
-        {/* Notch */}
-        <div className="flex items-center justify-center pt-3 pb-1 flex-shrink-0 bg-white z-10">
-          <div className="w-16 h-4 bg-black rounded-full" />
-        </div>
-        {/* App */}
-        <div className="flex-1 overflow-hidden">
-          <InteractiveApp />
-        </div>
+      <div className="flex flex-row items-start gap-8">
+
+        {/* Phone */}
+        <motion.div
+          initial={{ scale: 0.85, opacity: 0 }}
+          animate={{ scale: 1,    opacity: 1 }}
+          exit={  { scale: 0.85, opacity: 0 }}
+          transition={{ type: "spring", damping: 22, stiffness: 300 }}
+          className="relative flex-shrink-0"
+          style={{ width: 320, height: 640 }}
+        >
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className="absolute -top-3 -right-3 z-10 w-8 h-8 rounded-full bg-white shadow-md flex items-center justify-center hover:bg-gray-100 transition-colors"
+            aria-label="Close"
+          >
+            <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="#111" strokeWidth="2.5" strokeLinecap="round">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+          {/* Bezel */}
+          <div className="absolute inset-0 rounded-[3rem] bg-black" />
+          <div className="absolute bg-white flex flex-col overflow-hidden" style={{ top: 12, left: 12, right: 12, bottom: 12, borderRadius: "2.6rem" }}>
+            {/* Notch */}
+            <div className="flex items-center justify-center pt-3 pb-1 flex-shrink-0 bg-white z-10">
+              <div className="w-16 h-4 bg-black rounded-full" />
+            </div>
+            {/* App */}
+            <div className="flex-1 overflow-hidden">
+              <InteractiveApp onOrderConfirmed={(cart) => setConfirmedCart(cart)} />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Merchant panel — slides in after order confirmed */}
+        {confirmedCart && (
+          <div className="flex flex-col gap-6 pt-10">
+            <MerchantTablet
+              cart={confirmedCart}
+              onAccept={() => setOrderAccepted(true)}
+            />
+            <ReceiptPrinter
+              printing={orderAccepted}
+              cart={confirmedCart}
+            />
+          </div>
+        )}
+
       </div>
     </motion.div>
-  </motion.div>
-);
+  );
+};
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
 const Hero = () => {
