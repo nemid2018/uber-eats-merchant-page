@@ -152,6 +152,8 @@ const HomeScreen = ({
   cart, add, go,
 }: { cart: CartMap; add: (id: string) => void; go: (s: AppScreen) => void }) => {
   const totalItems = Object.values(cart).reduce((a, b) => a + b, 0);
+  const subtotal   = FOOD_ITEMS.reduce((s, i) => s + (cart[i.id] || 0) * i.price, 0);
+
   return (
     <div className="flex flex-col h-full">
       <div className="px-5 pt-5 pb-3 flex items-center justify-between border-b border-gray-100 flex-shrink-0">
@@ -208,6 +210,38 @@ const HomeScreen = ({
           </div>
         ))}
       </div>
+
+      {/* Persistent "Go to cart" bar */}
+      <AnimatePresence>
+        {totalItems > 0 && (
+          <motion.div
+            key="cart-bar"
+            initial={{ y: 60, opacity: 0 }}
+            animate={{ y: 0,  opacity: 1 }}
+            exit={{   y: 60, opacity: 0 }}
+            transition={{ type: "spring", damping: 22, stiffness: 320 }}
+            className="px-4 pb-4 pt-2 flex-shrink-0"
+          >
+            <button
+              onClick={() => go("cart")}
+              className="w-full bg-[#06C167] rounded-full flex items-center px-3 py-2.5 active:scale-[0.98] transition-transform"
+            >
+              {/* Item count badge */}
+              <span className="w-6 h-6 rounded-md bg-black/20 text-white text-[10px] font-bold flex items-center justify-center flex-shrink-0">
+                {totalItems}
+              </span>
+              {/* Label */}
+              <span className="flex-1 text-center text-white text-[12px] font-bold tracking-wide">
+                Go to cart
+              </span>
+              {/* Price */}
+              <span className="text-white text-[11px] font-bold flex-shrink-0">
+                ${subtotal.toFixed(2)}
+              </span>
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
