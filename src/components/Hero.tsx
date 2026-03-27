@@ -442,13 +442,13 @@ const MerchantTablet = ({ cart, onAccept }: { cart: CartMap; onAccept: () => voi
       transition={{ duration: 0.45, ease: [0.2, 0, 0, 1], delay: 0.15 }}
     >
       <p className="text-[11px] text-gray-400 font-semibold mb-2 tracking-widest uppercase">Merchant tablet</p>
-      {/* Landscape tablet — dark bezel */}
-      <div className="relative bg-[#1a1a1a] rounded-3xl p-3 shadow-2xl" style={{ width: 480, minHeight: 640 }}>
-        {/* Home bar on right side (landscape detail) */}
-        <div className="absolute right-1.5 top-1/2 -translate-y-1/2 w-1.5 h-12 bg-[#333] rounded-full" />
-        <div className="bg-white rounded-2xl overflow-hidden h-full" style={{ minHeight: 614 }}>
+      {/* Portrait tablet — dark bezel */}
+      <div className="relative bg-[#1a1a1a] rounded-[2rem] p-3 shadow-2xl" style={{ width: 400, height: 580 }}>
+        {/* Home bar at bottom center */}
+        <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-16 h-1.5 bg-[#333] rounded-full" />
+        <div className="bg-white rounded-[1.5rem] overflow-hidden flex flex-col" style={{ height: "100%" }}>
           {/* Header */}
-          <div className={`px-6 py-4 flex items-center gap-3 transition-colors duration-500 bg-[#06C167]`}>
+          <div className="px-6 py-4 flex items-center gap-3 bg-[#06C167] flex-shrink-0">
             {!accepted && (
               <motion.span
                 className="w-3 h-3 rounded-full bg-white shrink-0"
@@ -467,7 +467,7 @@ const MerchantTablet = ({ cart, onAccept }: { cart: CartMap; onAccept: () => voi
           </div>
 
           {/* Order items */}
-          <div className="px-6 py-5">
+          <div className="px-6 py-5 flex-1">
             {cartItems.map((item) => (
               <div key={item.id} className="flex justify-between items-center py-2.5 border-b border-gray-50 last:border-0">
                 <span className="text-[14px] text-gray-600">{cart[item.id]}× {item.name}</span>
@@ -487,7 +487,7 @@ const MerchantTablet = ({ cart, onAccept }: { cart: CartMap; onAccept: () => voi
                 initial={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0, overflow: "hidden" }}
                 transition={{ duration: 0.25 }}
-                className="flex gap-3 px-6 pb-6"
+                className="flex gap-3 px-6 pb-6 flex-shrink-0"
               >
                 <button
                   onClick={handleAccept}
@@ -504,7 +504,7 @@ const MerchantTablet = ({ cart, onAccept }: { cart: CartMap; onAccept: () => voi
 
           {/* Accepted state footer */}
           {accepted && (
-            <div className="px-6 pb-6 pt-2">
+            <div className="px-6 pb-6 pt-2 flex-shrink-0">
               <p className="text-[12px] text-gray-400">Notified kitchen — estimated prep time 15 min</p>
             </div>
           )}
@@ -526,18 +526,16 @@ const ReceiptPrinter = ({ printing, cart }: { printing: boolean; cart: CartMap }
       transition={{ duration: 0.45, ease: [0.2, 0, 0, 1], delay: 0.3 }}
     >
       <p className="text-[11px] text-gray-400 font-semibold mb-2 tracking-widest uppercase">Receipt printer</p>
-      <div className="flex items-end gap-5">
+      <div style={{ width: 160 }}>
         {/* Printer body */}
-        <div className="bg-white rounded-2xl border border-gray-200 shadow-md flex flex-col items-center pt-3.5 pb-5 px-6" style={{ width: 220 }}>
-          {/* Paper slot */}
-          <div className="bg-gray-100 border border-gray-200 rounded-sm mb-4" style={{ width: 130, height: 5 }} />
+        <div className="bg-[#2a2a2a] rounded-2xl shadow-lg flex flex-col items-center py-4 px-5">
           {/* Status lights */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-3">
             <motion.div
               className="w-2.5 h-2.5 rounded-full"
-              animate={{ backgroundColor: printing ? "#06C167" : "#d1d5db" }}
+              animate={{ backgroundColor: printing ? "#06C167" : "#4b5563" }}
               transition={{ duration: 0.5 }}
-              style={printing ? { boxShadow: "0 0 0 4px #06c16722" } : {}}
+              style={printing ? { boxShadow: "0 0 0 4px #06c16733" } : {}}
             />
             {printing && (
               <motion.div
@@ -546,41 +544,38 @@ const ReceiptPrinter = ({ printing, cart }: { printing: boolean; cart: CartMap }
                 transition={{ repeat: Infinity, duration: 0.6 }}
               />
             )}
-            <span className="text-[9px] font-bold tracking-[0.2em] text-gray-300 ml-1">PRINT</span>
           </div>
+          <span className="text-[8px] font-bold tracking-[0.2em] text-gray-500">PRINT</span>
+          {/* Paper slot */}
+          <div className="mt-4 bg-black rounded-full" style={{ width: 100, height: 3 }} />
         </div>
 
-        {/* Paper emerging from slot */}
-        <div className="flex flex-col items-center" style={{ width: 130 }}>
-          {/* Paper strip — grows downward */}
-          <div className="overflow-hidden w-full" style={{ width: 130 }}>
-            <motion.div
-              initial={{ height: 0 }}
-              animate={{ height: printing ? 190 : 0 }}
-              transition={{ duration: 2.2, ease: "easeOut", delay: printing ? 0.6 : 0 }}
-              className="bg-white border-l border-r border-b border-gray-200 overflow-hidden w-full"
-            >
-              <div className="px-3 pt-3 pb-2.5 font-mono">
-                <p className="text-center font-black text-[11px] mb-0.5 tracking-widest">UBER EATS</p>
-                <p className="text-center text-gray-400 text-[9px] mb-2">Order Receipt</p>
-                <div className="border-t border-dashed border-gray-300 mb-2" />
-                {cartItems.map((item) => (
-                  <div key={item.id} className="flex justify-between text-[9px] text-gray-700 leading-5">
-                    <span>{cart[item.id]}x {item.name.length > 12 ? item.name.slice(0, 12) + "…" : item.name}</span>
-                    <span>${(item.price * cart[item.id]).toFixed(2)}</span>
-                  </div>
-                ))}
-                <div className="border-t border-dashed border-gray-300 mt-2 mb-2" />
-                <div className="flex justify-between font-bold text-[10px]">
-                  <span>TOTAL</span>
-                  <span>${(subtotal + DELIVERY_FEE).toFixed(2)}</span>
+        {/* Paper grows downward from slot */}
+        <div className="overflow-hidden mx-auto" style={{ width: 120 }}>
+          <motion.div
+            initial={{ height: 0 }}
+            animate={{ height: printing ? 200 : 0 }}
+            transition={{ duration: 2.2, ease: "easeOut", delay: printing ? 0.5 : 0 }}
+            className="bg-white border-l border-r border-b border-gray-200 overflow-hidden"
+          >
+            <div className="px-3 pt-3 pb-3 font-mono">
+              <p className="text-center font-black text-[11px] mb-0.5 tracking-widest">UBER EATS</p>
+              <p className="text-center text-gray-400 text-[9px] mb-2">Order Receipt</p>
+              <div className="border-t border-dashed border-gray-300 mb-2" />
+              {cartItems.map((item) => (
+                <div key={item.id} className="flex justify-between text-[9px] text-gray-700 leading-5">
+                  <span>{cart[item.id]}x {item.name.length > 10 ? item.name.slice(0, 10) + "…" : item.name}</span>
+                  <span>${(item.price * cart[item.id]).toFixed(2)}</span>
                 </div>
-                <p className="text-center text-[8px] text-gray-300 mt-2.5">Thank you!</p>
+              ))}
+              <div className="border-t border-dashed border-gray-300 mt-2 mb-2" />
+              <div className="flex justify-between font-bold text-[10px]">
+                <span>TOTAL</span>
+                <span>${(subtotal + DELIVERY_FEE).toFixed(2)}</span>
               </div>
-            </motion.div>
-          </div>
-          {/* Slot indicator */}
-          <div className="bg-gray-200 rounded-sm" style={{ width: 130, height: 4 }} />
+              <p className="text-center text-[8px] text-gray-300 mt-2.5">Thank you!</p>
+            </div>
+          </motion.div>
         </div>
       </div>
     </motion.div>
@@ -652,7 +647,7 @@ const PhoneOverlay = ({ onClose }: { onClose: () => void }) => {
       transition={{ duration: 0.2 }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="flex flex-row items-center gap-10">
+      <div className="flex flex-row items-start gap-10">
 
         {/* Phone */}
         <motion.div
@@ -687,18 +682,20 @@ const PhoneOverlay = ({ onClose }: { onClose: () => void }) => {
           </div>
         </motion.div>
 
-        {/* Merchant panel — slides in after order confirmed */}
+        {/* Tablet — slides in after order confirmed */}
         {confirmedCart && (
-          <div className="flex flex-col gap-6">
-            <MerchantTablet
-              cart={confirmedCart}
-              onAccept={() => setOrderAccepted(true)}
-            />
-            <ReceiptPrinter
-              printing={orderAccepted}
-              cart={confirmedCart}
-            />
-          </div>
+          <MerchantTablet
+            cart={confirmedCart}
+            onAccept={() => setOrderAccepted(true)}
+          />
+        )}
+
+        {/* Receipt printer — slides in alongside tablet */}
+        {confirmedCart && (
+          <ReceiptPrinter
+            printing={orderAccepted}
+            cart={confirmedCart}
+          />
         )}
 
       </div>
