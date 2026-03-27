@@ -123,13 +123,13 @@ const Check = () => (
   </svg>
 );
 
-const BackArrow = ({ onBack }: { onBack: () => void }) => (
+const BackArrow = ({ onBack, light = false }: { onBack: () => void; light?: boolean }) => (
   <button
     onClick={onBack}
-    className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors shrink-0"
+    className={`w-7 h-7 flex items-center justify-center rounded-full transition-colors shrink-0 ${light ? "hover:bg-white/10" : "hover:bg-gray-100"}`}
     aria-label="Back"
   >
-    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke={light ? "white" : "currentColor"} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <path d="M19 12H5M12 5l-7 7 7 7" />
     </svg>
   </button>
@@ -137,7 +137,7 @@ const BackArrow = ({ onBack }: { onBack: () => void }) => (
 
 // ─── Interactive app screens ─────────────────────────────────────────────────
 type CartMap   = Record<string, number>;
-type AppScreen = "home" | "cart" | "confirmed" | "tracking";
+type AppScreen = "home" | "cart" | "confirmed" | "tracking" | "contact" | "message";
 
 const DELIVERY_FEE = 2.99;
 
@@ -373,8 +373,246 @@ const TrackingScreen = ({ go }: { go: (s: AppScreen) => void }) => {
       </div>
 
       <div className="px-5 pb-5 flex-shrink-0">
-        <div className="border border-gray-200 rounded-xl py-3 flex items-center justify-center">
+        <button
+          onClick={() => go("contact")}
+          className="w-full border border-gray-200 rounded-xl py-3 flex items-center justify-center active:scale-[0.98] transition-transform hover:bg-gray-50"
+        >
           <span className="text-black text-[11px] font-bold tracking-wide">Contact driver</span>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// ─── Call overlay ────────────────────────────────────────────────────────────
+const CallOverlay = ({ onEnd }: { onEnd: () => void }) => {
+  useEffect(() => {
+    const t = setTimeout(onEnd, 10000);
+    return () => clearTimeout(t);
+  }, [onEnd]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.25 }}
+      className="absolute inset-0 z-20 flex flex-col items-center bg-[#1c1c1e]"
+    >
+      {/* Top section */}
+      <div className="flex-1 flex flex-col items-center justify-center gap-3 w-full px-6">
+        <p className="text-white text-[10px] opacity-50 tracking-widest uppercase">Uber · Calling…</p>
+        <div className="w-20 h-20 rounded-full bg-gray-600 flex items-center justify-center">
+          <span className="text-[30px] font-bold text-white">M</span>
+        </div>
+        <p className="text-white text-[22px] font-bold">Marcus</p>
+        <p className="text-gray-400 text-[11px]">Your driver</p>
+      </div>
+
+      {/* Controls row */}
+      <div className="pb-10 flex flex-col items-center gap-2">
+        {/* Mute / Speaker (decorative) */}
+        <div className="flex gap-8 mb-6">
+          {[
+            { label: "mute", icon: <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/> },
+            { label: "speaker", icon: <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/> },
+          ].map(({ label, icon }) => (
+            <div key={label} className="flex flex-col items-center gap-1.5">
+              <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  {icon}
+                </svg>
+              </div>
+              <span className="text-white text-[9px] opacity-60 capitalize">{label}</span>
+            </div>
+          ))}
+        </div>
+        {/* End call */}
+        <button
+          onClick={onEnd}
+          className="w-16 h-16 rounded-full bg-red-500 flex items-center justify-center active:scale-95 transition-transform"
+          aria-label="End call"
+        >
+          <svg viewBox="0 0 24 24" className="w-7 h-7" fill="white">
+            <path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/>
+          </svg>
+        </button>
+        <span className="text-white text-[9px] opacity-40 mt-1">End call</span>
+      </div>
+    </motion.div>
+  );
+};
+
+// ─── Contact driver screen ────────────────────────────────────────────────────
+const ContactDriverScreen = ({ go }: { go: (s: AppScreen) => void }) => {
+  const [calling, setCalling] = useState(false);
+
+  return (
+    <div className="flex flex-col h-full relative">
+      {/* Dark header */}
+      <div className="bg-black px-5 pt-4 pb-4 flex-shrink-0">
+        <BackArrow light onBack={() => go("tracking")} />
+        <div className="mt-3">
+          <p className="text-white text-[9px] opacity-50 tracking-widest uppercase mb-0.5">Toyota Camry · Silver · ABC 1234</p>
+          <p className="text-white text-[16px] font-bold">Your driver</p>
+        </div>
+      </div>
+
+      {/* Driver info */}
+      <div className="flex flex-col items-center py-5 flex-shrink-0">
+        <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mb-2.5">
+          <span className="text-[26px] font-bold text-gray-600">M</span>
+        </div>
+        <p className="text-[15px] font-bold text-black mb-1">Marcus</p>
+        <p className="text-[11px] text-gray-400">⭐ 4.92 · 1,847 trips</p>
+      </div>
+
+      {/* Three action buttons */}
+      <div className="flex justify-around px-4 mb-5 flex-shrink-0">
+        {[
+          {
+            label: "Call",
+            onClick: () => setCalling(true),
+            icon: <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 .84h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.82a16 16 0 006.29 6.29l1.28-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />,
+          },
+          {
+            label: "Message",
+            onClick: () => go("message"),
+            icon: <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />,
+          },
+          {
+            label: "Share location",
+            onClick: () => {},
+            icon: <><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" /><circle cx="12" cy="10" r="3" /></>,
+          },
+        ].map(({ label, onClick, icon }) => (
+          <button key={label} onClick={onClick} className="flex flex-col items-center gap-1.5 active:scale-95 transition-transform">
+            <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" className="w-5 h-5" fill="none" stroke="black" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                {icon}
+              </svg>
+            </div>
+            <span className="text-[10px] text-gray-600 font-medium text-center leading-tight" style={{ maxWidth: 52 }}>{label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Quick reply chips */}
+      <div className="px-5 mb-4 flex-shrink-0">
+        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-2">Quick message</p>
+        <div className="flex flex-wrap gap-2">
+          {["I'm outside", "Almost there", "Where are you?"].map((q) => (
+            <button
+              key={q}
+              onClick={() => go("message")}
+              className="px-3 py-1.5 rounded-full border border-gray-200 text-[11px] text-gray-700 font-medium hover:bg-gray-50 active:scale-95 transition-transform"
+            >
+              {q}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Chat input */}
+      <div className="mt-auto px-5 pb-5 flex-shrink-0">
+        <button
+          onClick={() => go("message")}
+          className="w-full flex items-center gap-2 border border-gray-200 rounded-full px-4 py-2.5 bg-white"
+        >
+          <span className="flex-1 text-left text-[11px] text-gray-400">Send a message…</span>
+          <div className="w-6 h-6 rounded-full bg-black flex items-center justify-center flex-shrink-0">
+            <svg viewBox="0 0 24 24" className="w-3 h-3" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 2L11 13M22 2L15 22 11 13 2 9l20-7z" />
+            </svg>
+          </div>
+        </button>
+      </div>
+
+      {/* Call overlay */}
+      <AnimatePresence>
+        {calling && <CallOverlay onEnd={() => setCalling(false)} />}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+// ─── Message screen ───────────────────────────────────────────────────────────
+const MessageScreen = ({ go }: { go: (s: AppScreen) => void }) => {
+  const [messages, setMessages] = useState([
+    { from: "driver" as const, text: "On my way! 2 minutes away 🚗", time: "8:40 PM" },
+  ]);
+  const [input, setInput] = useState("");
+
+  const send = (text: string) => {
+    if (!text.trim()) return;
+    setMessages((prev) => [...prev, { from: "me" as const, text, time: "8:41 PM" }]);
+    setInput("");
+  };
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Dark header */}
+      <div className="bg-black px-4 pt-4 pb-3 flex items-center gap-3 flex-shrink-0">
+        <BackArrow light onBack={() => go("contact")} />
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-full bg-gray-600 flex items-center justify-center">
+            <span className="text-[11px] font-bold text-white">M</span>
+          </div>
+          <div>
+            <p className="text-white text-[13px] font-bold leading-tight">Marcus</p>
+            <p className="text-white text-[9px] opacity-50 leading-tight">Your driver</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Message thread */}
+      <div className="flex-1 px-4 py-4 overflow-auto flex flex-col gap-3">
+        {messages.map((m, i) => (
+          <div key={i} className={`flex ${m.from === "me" ? "justify-end" : "justify-start"}`}>
+            <div
+              className={`max-w-[75%] px-3 py-2 rounded-2xl text-[11px] leading-snug ${
+                m.from === "me"
+                  ? "bg-[#06C167] text-white rounded-br-sm"
+                  : "bg-gray-100 text-gray-800 rounded-bl-sm"
+              }`}
+            >
+              {m.text}
+              <p className={`text-[8px] mt-1 ${m.from === "me" ? "opacity-70" : "text-gray-400"}`}>{m.time}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Quick replies + input */}
+      <div className="px-4 pb-5 flex-shrink-0 border-t border-gray-100 pt-3">
+        <div className="flex gap-1.5 mb-2.5 overflow-x-auto pb-0.5">
+          {["I'm outside", "Almost there", "Thank you!"].map((q) => (
+            <button
+              key={q}
+              onClick={() => send(q)}
+              className="px-3 py-1 rounded-full border border-gray-200 text-[10px] text-gray-600 whitespace-nowrap flex-shrink-0 hover:bg-gray-50 active:scale-95 transition-transform"
+            >
+              {q}
+            </button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") send(input); }}
+            placeholder="Message…"
+            className="flex-1 text-[11px] border border-gray-200 rounded-full px-4 py-2 outline-none"
+          />
+          <button
+            onClick={() => send(input)}
+            className="w-7 h-7 rounded-full bg-black flex items-center justify-center flex-shrink-0 active:scale-95 transition-transform"
+          >
+            <svg viewBox="0 0 24 24" className="w-3.5 h-3.5" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 2L11 13M22 2L15 22 11 13 2 9l20-7z" />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
@@ -414,10 +652,12 @@ const InteractiveApp = ({ onOrderConfirmed }: { onOrderConfirmed?: (cart: CartMa
           transition={{ duration: 0.22, ease: [0.2, 0, 0, 1] }}
           className="absolute inset-0"
         >
-          {screen === "home"      && <HomeScreen      cart={cart} add={add}                   go={go} />}
-          {screen === "cart"      && <CartScreen      cart={cart} add={add} remove={remove}   go={go} />}
-          {screen === "confirmed" && <ConfirmedScreen cart={cart}                              go={go} />}
-          {screen === "tracking"  && <TrackingScreen                                           go={go} />}
+          {screen === "home"      && <HomeScreen           cart={cart} add={add}                 go={go} />}
+          {screen === "cart"      && <CartScreen           cart={cart} add={add} remove={remove} go={go} />}
+          {screen === "confirmed" && <ConfirmedScreen      cart={cart}                            go={go} />}
+          {screen === "tracking"  && <TrackingScreen                                               go={go} />}
+          {screen === "contact"   && <ContactDriverScreen                                          go={go} />}
+          {screen === "message"   && <MessageScreen                                                go={go} />}
         </motion.div>
       </AnimatePresence>
     </div>
