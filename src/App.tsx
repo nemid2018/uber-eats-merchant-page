@@ -5,6 +5,7 @@ import SuccessStories from "./pages/SuccessStories";
 import WhyPartner from "./pages/WhyPartner";
 import Earnings from "./pages/Earnings";
 import ProfitMargin from "./pages/ProfitMargin";
+import OrderDemo from "./pages/OrderDemo";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -18,6 +19,7 @@ const App = () => (
         <Route path="/why-partner" element={<WhyPartner />} />
         <Route path="/earnings" element={<Earnings />} />
         <Route path="/profit-margin" element={<ProfitMargin />} />
+        <Route path="/order-demo" element={<OrderDemo />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>
