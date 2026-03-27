@@ -443,25 +443,25 @@ const MerchantTablet = ({ cart, onAccept }: { cart: CartMap; onAccept: () => voi
     >
       <p className="text-[11px] text-gray-400 font-semibold mb-2 tracking-widest uppercase">Merchant tablet</p>
       {/* Landscape tablet — dark bezel */}
-      <div className="relative bg-[#1a1a1a] rounded-[2rem] p-3 shadow-2xl" style={{ width: 580, height: 400 }}>
+      <div className="relative bg-[#1a1a1a] rounded-[2.5rem] p-4 shadow-2xl" style={{ width: 750, height: 500 }}>
         {/* Home bar on right side */}
-        <div className="absolute right-1.5 top-1/2 -translate-y-1/2 w-1.5 h-14 bg-[#333] rounded-full" />
-        <div className="bg-white rounded-[1.5rem] overflow-hidden flex flex-col" style={{ height: "100%" }}>
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 w-2 h-16 bg-[#333] rounded-full" />
+        <div className="bg-white rounded-[2rem] overflow-hidden flex flex-col" style={{ height: "100%" }}>
           {/* Header */}
-          <div className="px-6 py-4 flex items-center gap-3 bg-[#06C167] flex-shrink-0">
+          <div className="px-8 py-5 flex items-center gap-4 bg-[#06C167] flex-shrink-0">
             {!accepted && (
               <motion.span
-                className="w-3 h-3 rounded-full bg-white shrink-0"
+                className="w-4 h-4 rounded-full bg-white shrink-0"
                 animate={{ opacity: [1, 0.25, 1] }}
                 transition={{ repeat: Infinity, duration: 0.75, ease: "easeInOut" }}
               />
             )}
             {accepted && (
-              <svg viewBox="0 0 10 8" className="w-4 h-4 shrink-0" fill="none">
+              <svg viewBox="0 0 10 8" className="w-5 h-5 shrink-0" fill="none">
                 <path d="M1 4l3 3 5-6" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             )}
-            <p className="text-white font-black text-[16px] tracking-widest uppercase">
+            <p className="text-white font-black text-[20px] tracking-widest uppercase">
               {accepted ? "ORDER ACCEPTED — Preparing" : "NEW ORDER"}
             </p>
           </div>
@@ -469,43 +469,43 @@ const MerchantTablet = ({ cart, onAccept }: { cart: CartMap; onAccept: () => voi
           {/* Order items + actions side by side */}
           <div className="flex flex-1 overflow-hidden">
             {/* Order list */}
-            <div className="flex-1 px-6 py-5 border-r border-gray-100 overflow-auto">
+            <div className="flex-1 px-8 py-6 border-r border-gray-100 overflow-auto">
               {cartItems.map((item) => (
-                <div key={item.id} className="flex justify-between items-center py-2.5 border-b border-gray-50 last:border-0">
-                  <span className="text-[14px] text-gray-600">{cart[item.id]}× {item.name}</span>
-                  <span className="text-[14px] font-semibold text-gray-900">${(item.price * cart[item.id]).toFixed(2)}</span>
+                <div key={item.id} className="flex justify-between items-center py-3.5 border-b border-gray-100 last:border-0">
+                  <span className="text-[17px] text-gray-600">{cart[item.id]}× {item.name}</span>
+                  <span className="text-[17px] font-semibold text-gray-900">${(item.price * cart[item.id]).toFixed(2)}</span>
                 </div>
               ))}
-              <div className="flex justify-between text-[15px] font-bold pt-3 mt-2 border-t border-gray-100">
+              <div className="flex justify-between text-[18px] font-bold pt-4 mt-3 border-t border-gray-200">
                 <span>Total</span>
                 <span>${(subtotal + DELIVERY_FEE).toFixed(2)}</span>
               </div>
             </div>
 
             {/* Action panel */}
-            <div className="flex flex-col items-center justify-center px-6 gap-3" style={{ width: 180 }}>
+            <div className="flex flex-col items-center justify-center px-8 gap-4" style={{ width: 230 }}>
               <AnimatePresence>
                 {!accepted && (
                   <motion.div
                     initial={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.25 }}
-                    className="flex flex-col gap-3 w-full"
+                    className="flex flex-col gap-4 w-full"
                   >
                     <button
                       onClick={handleAccept}
-                      className="w-full bg-[#06C167] text-white text-[14px] font-bold py-3.5 rounded-xl active:scale-95 transition-transform hover:opacity-90"
+                      className="w-full bg-[#06C167] text-white text-[17px] font-bold py-4 rounded-2xl active:scale-95 transition-transform hover:opacity-90"
                     >
                       Accept
                     </button>
-                    <button className="w-full border border-gray-200 text-gray-500 text-[14px] font-bold py-3.5 rounded-xl active:scale-95 transition-transform hover:bg-gray-50">
+                    <button className="w-full border border-gray-200 text-gray-500 text-[17px] font-bold py-4 rounded-2xl active:scale-95 transition-transform hover:bg-gray-50">
                       Decline
                     </button>
                   </motion.div>
                 )}
               </AnimatePresence>
               {accepted && (
-                <p className="text-[12px] text-gray-400 text-center">Notified kitchen — est. prep 15 min</p>
+                <p className="text-[14px] text-gray-400 text-center leading-relaxed">Notified kitchen — est. prep 15 min</p>
               )}
             </div>
           </div>
